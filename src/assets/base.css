@@ -1,1 +1,26 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+
+@theme {
+  --color-custom-header: #ddd;
+  --color-custom-nav: #bbb;
+  --color-custom-title: #444;
+  --color-custom-titlebg: #bbb;
+  --color-custom-formbg: #fff;
+  --color-custom-formheader: #666;
+  --color-custom-buttonbg: #666;
+  --color-custom-buttonhover: #555;
+  --color-custom-footer: #bbb;
+  --color-custom-footertext: #444;
+  --color-custom-tablehead: #777;
+  --color-custom-tableborder: #eee;
+  --color-custom-tablehover: #f9f9f9;
+  --color-custom-inputborder: #ddd;
+  --color-custom-inputbg: #f9f9f9;
+  --color-custom-optionhover: #eee;
+  --color-custom-optionselected: #999;
+
+  --box-shadow-btn: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --box-shadow-section: 0 5px 15px rgba(0, 0, 0, 0.1);
+  --box-shadow-table: 0 0 10px rgba(0, 0, 0, 0.05);
+  --box-shadow-input: 0 0 5px rgba(136, 136, 136, 0.3);
+}
