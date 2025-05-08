@@ -19,8 +19,8 @@
   --color-custom-optionhover: #eee;
   --color-custom-optionselected: #999;
 
-  --box-shadow-btn: 0 4px 8px rgba(0, 0, 0, 0.1);
-  --box-shadow-section: 0 5px 15px rgba(0, 0, 0, 0.1);
-  --box-shadow-table: 0 0 10px rgba(0, 0, 0, 0.05);
-  --box-shadow-input: 0 0 5px rgba(136, 136, 136, 0.3);
+  --shadow-btn: 0 4px 8px rgba(0, 0, 0, 0.1);
+  --shadow-section: 0 5px 15px rgba(0, 0, 0, 0.1);
+  --shadow-table: 0 0 10px rgba(0, 0, 0, 0.05);
+  --shadow-input: 0 0 5px rgba(136, 136, 136, 0.3);
 }

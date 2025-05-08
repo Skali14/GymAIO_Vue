@@ -4,14 +4,16 @@
       class="flex justify-center flex-col lg:flex-row m-5 gap-4 md:gap-8 flex-1 max-w-[1400px] w-full p-2"
     >
       <div class="w-full lg:w-[370px] lg:flex-none">
-        <section class="bg-custom-formbg rounded-xl shadow-section overflow-hidden mb-4 lg:mb-0">
+        <section
+          id="exercise-form"
+          class="bg-custom-formbg rounded-xl shadow-section overflow-hidden mb-4 lg:mb-0"
+        >
           <h2
             class="bg-gradient-to-br from-[#888] to-custom-formheader text-white m-0 py-3 px-4 md:py-4 md:px-5 text-2xl md:text-3xl tracking-wider font-semibold"
           >
             {{ isEditing ? 'Update an exercise' : 'Create a new exercise' }}
           </h2>
           <form
-            id="exercise-form"
             class="bg-white p-4 md:p-6 m-0 w-full box-border rounded-none shadow-none"
             @submit.prevent="handleFormSubmit"
           >
@@ -200,191 +202,18 @@
             Saved Exercises
           </h2>
 
-          <article class="px-3 md:px-5">
-            <h3 class="text-[#555] border-b-2 border-[#eee] pb-2 mt-5 text-xl font-bold">
-              My Exercises
-            </h3>
-            <div class="mt-6 overflow-x-auto">
-              <table
-                v-if="this.exerciseStore.myExercises.length > 0"
-                id="my"
-                class="w-full my-0 mb-5 border-collapse border-spacing-0 bg-white rounded-lg overflow-hidden shadow-table min-w-[650px]"
-              >
-                <thead>
-                  <tr>
-                    <th
-                      class="bg-gradient-to-br from-[#777] to-custom-tablehead text-white font-semibold tracking-wider py-3 px-2 md:py-3.5 md:px-4 text-left"
-                    >
-                      Name
-                    </th>
-                    <th
-                      class="bg-gradient-to-br from-[#777] to-custom-tablehead text-white font-semibold tracking-wider py-3 px-2 md:py-3.5 md:px-4 text-left"
-                    >
-                      Difficulty Level
-                    </th>
-                    <th
-                      class="bg-gradient-to-br from-[#777] to-custom-tablehead text-white font-semibold tracking-wider py-3 px-2 md:py-3.5 md:px-4 text-left"
-                    >
-                      Tags
-                    </th>
-                    <th
-                      class="bg-gradient-to-br from-[#777] to-custom-tablehead text-white font-semibold tracking-wider py-3 px-2 md:py-3.5 md:px-4 text-left"
-                    >
-                      Intensity
-                    </th>
-                    <th
-                      class="bg-gradient-to-br from-[#777] to-custom-tablehead text-white font-semibold tracking-wider py-3 px-2 md:py-3.5 md:px-4 text-left"
-                    >
-                      Manage
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="exercise in this.exerciseStore.myExercises"
-                    :key="exercise.id"
-                    class="border-b border-custom-tableborder hover:bg-custom-tablehover"
-                  >
-                    <td class="py-2 px-2 md:py-3 md:px-4 text-left">{{ exercise.name }}</td>
-                    <td class="py-2 px-2 md:py-3 md:px-4 text-left">
-                      {{
-                        exercise.difficulty.charAt(0).toUpperCase() + exercise.difficulty.slice(1)
-                      }}
-                    </td>
-                    <td class="py-2 px-2 md:py-3 md:px-4 text-left">
-                      {{ exercise.tags.map(formatEntry).join(', ') }}
-                    </td>
-                    <td class="py-2 px-2 md:py-3 md:px-4 text-left">{{ exercise.intensity }}</td>
-                    <td class="py-2 px-2 md:py-3 md:px-4 text-center">
-                      <a
-                        href="#edit"
-                        @click.prevent="startEdit(exercise)"
-                        title="Edit exercise"
-                        class="mx-1 md:mx-1.5 inline-block transition-transform duration-200 hover:scale-110"
-                      >
-                        <img
-                          src="/edit.svg"
-                          alt="Modify"
-                          width="18"
-                          height="18"
-                          style="vertical-align: middle"
-                        />
-                      </a>
-                      <a
-                        href="#delete"
-                        @click.prevent="handleDeleteExercise(exercise.id)"
-                        title="Delete exercise"
-                        class="mx-1 md:mx-1.5 inline-block transition-transform duration-200 hover:scale-110"
-                      >
-                        <img
-                          src="/trash.svg"
-                          alt="Delete"
-                          width="18"
-                          height="18"
-                          style="vertical-align: middle"
-                        />
-                      </a>
-                      <a
-                        href="#favorite"
-                        @click.prevent="handleFavoriteExercise(exercise.id)"
-                        title="Add to Favourites"
-                        class="mx-1 md:mx-1.5 inline-block transition-transform duration-200 hover:scale-110"
-                      >
-                        <img
-                          :src="exercise.favorite ? '/favorite_full.svg' : '/favorite.svg'"
-                          alt="Favorite"
-                          width="18"
-                          height="18"
-                          style="vertical-align: middle"
-                        />
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <p v-if="this.exerciseStore.myExercises.length === 0">You have not created any exercises yet.</p>
-            </div>
-          </article>
+          <ExerciseTable
+            tablename="My Exercises"
+            :exercises="exerciseStore.myExercises"
+            @edit-exercise="(exercise) => startEdit(exercise)"
+            @exercise-deleted="(exerciseId) => handleExerciseDeleted(exerciseId)"
+          ></ExerciseTable>
 
-          <article class="px-3 md:px-5">
-            <h3 class="text-[#555] border-b-2 border-[#eee] pb-2 mt-5 text-xl font-bold">
-              Shared Exercises
-            </h3>
-            <div class="mt-6 overflow-x-auto">
-              <table
-                v-if="this.exerciseStore.sharedExercises.length > 0"
-                id="shared"
-                class="w-full my-0 mb-5 border-collapse border-spacing-0 bg-white rounded-lg overflow-hidden shadow-table min-w-[650px]"
-              >
-                <thead>
-                  <tr>
-                    <th
-                      class="bg-gradient-to-br from-[#888] to-[#777] text-white font-semibold tracking-wider py-3 px-2 md:py-3.5 md:px-4 text-left"
-                    >
-                      Name
-                    </th>
-                    <th
-                      class="bg-gradient-to-br from-[#888] to-[#777] text-white font-semibold tracking-wider py-3 px-2 md:py-3.5 md:px-4 text-left"
-                    >
-                      Difficulty Level
-                    </th>
-                    <th
-                      class="bg-gradient-to-br from-[#888] to-[#777] text-white font-semibold tracking-wider py-3 px-2 md:py-3.5 md:px-4 text-left"
-                    >
-                      Tags
-                    </th>
-                    <th
-                      class="bg-gradient-to-br from-[#888] to-[#777] text-white font-semibold tracking-wider py-3 px-2 md:py-3.5 md:px-4 text-left"
-                    >
-                      Intensity
-                    </th>
-                    <th
-                      class="bg-gradient-to-br from-[#888] to-[#777] text-white font-semibold tracking-wider py-3 px-2 md:py-3.5 md:px-4 text-left"
-                    >
-                      Manage
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="exercise in this.exerciseStore.sharedExercises"
-                    :key="exercise.id"
-                    class="border-b border-custom-tableborder hover:bg-custom-tablehover"
-                  >
-                    <td class="py-2 px-2 md:py-3 md:px-4 text-left">{{ exercise.name }}</td>
-                    <td class="py-2 px-2 md:py-3 md:px-4 text-left">
-                      {{
-                        exercise.difficulty.charAt(0).toUpperCase() + exercise.difficulty.slice(1)
-                      }}
-                    </td>
-                    <td class="py-2 px-2 md:py-3 md:px-4 text-left">
-                      {{ exercise.tags.map(formatEntry).join(', ') }}
-                    </td>
-                    <td class="py-2 px-2 md:py-3 md:px-4 text-left">{{ exercise.intensity }}</td>
-                    <td class="py-2 px-2 md:py-3 md:px-4 text-center">
-                      <a
-                        href="#favorite"
-                        @click.prevent="handleFavoriteExercise(exercise.id)"
-                        title="Add to Favourites"
-                        class="mx-1 md:mx-1.5 inline-block transition-transform duration-200 hover:scale-110"
-                      >
-                        <img
-                          :src="exercise.favorite ? '/favorite_full.svg' : '/favorite.svg'"
-                          alt="Favorite"
-                          width="18"
-                          height="18"
-                          style="vertical-align: middle"
-                        />
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <p v-if="this.exerciseStore.sharedExercises.length === 0">
-                No exercises could be fetched from the server.
-              </p>
-            </div>
-          </article>
+          <ExerciseTable
+            tablename="Shared Exercises"
+            :exercises="exerciseStore.sharedExercises"
+          ></ExerciseTable>
+
         </section>
       </div>
     </main>
@@ -394,9 +223,11 @@
 <script>
 import { mapStores } from 'pinia'
 import { useExerciseStore, createEmptyExercise } from '@/stores/exerciseStore.js'
+import ExerciseTable from '@/components/ExerciseTable.vue'
 
 export default {
   name: 'ExercisePage',
+  components: { ExerciseTable },
   data() {
     return {
       currentExercise: createEmptyExercise(),
@@ -406,24 +237,19 @@ export default {
     }
   },
   computed: {
-    ...mapStores(useExerciseStore)
+    ...mapStores(useExerciseStore),
   },
   methods: {
     handleFormSubmit() {
       if (this.isEditing) {
-        this.exerciseStore.updateExercise({ ...this.currentExercise }) // Access action via dishStore
+        this.exerciseStore.updateExercise({ ...this.currentExercise })
       } else {
-        this.exerciseStore.addExercise({ ...this.currentExercise }) // Access action via dishStore
+        this.exerciseStore.addExercise({ ...this.currentExercise })
       }
       this.resetForm()
     },
-    handleFavoriteExercise(exerciseId) {
-      this.exerciseStore.favoriteExercise(exerciseId)
-    },
-
-    handleDeleteExercise(deletedExerciseId) {
-      // Check if the deleted dish is the one currently being edited
-      this.exerciseStore.deleteExercise(deletedExerciseId)
+    handleExerciseDeleted(deletedExerciseId) {
+      console.log('ExercisePage: Received exercise-deleted event for ID', deletedExerciseId)
 
       if (this.isEditing && this.currentExercise.id === deletedExerciseId) {
         console.log('ExercisePage: The currently edited exercise was deleted. Resetting form.')
@@ -434,13 +260,6 @@ export default {
       this.currentExercise = createEmptyExercise()
       this.fileInputKey++
       this.isEditing = false
-    },
-    formatEntry(str) {
-      return str
-        .replace(/-/g, ' ')
-        .split(' ')
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(' ')
     },
     handleFileUpload(event) {
       const file = event.target.files[0]

@@ -96,7 +96,7 @@ export const useExerciseStore = defineStore('exercise', {
       return state.exercises
         .filter((exercise) => exercise.own === false)
         .sort((a, b) => a.name.localeCompare(b.name))
-    }
+    },
   },
   actions: {
     addExercise(exerciseData) {
@@ -115,9 +115,7 @@ export const useExerciseStore = defineStore('exercise', {
     },
 
     updateExercise(updatedExerciseData) {
-      const index = this.exercises.findIndex(
-        (exercise) => exercise.id === updatedExerciseData.id,
-      )
+      const index = this.exercises.findIndex((exercise) => exercise.id === updatedExerciseData.id)
       if (index !== -1) {
         this.exercises.splice(index, 1, { ...updatedExerciseData })
         console.log('Updated exercise:', updatedExerciseData.name)
@@ -127,15 +125,14 @@ export const useExerciseStore = defineStore('exercise', {
     },
 
     deleteExercise(exerciseId) {
-      if (confirm('Are you sure you want to delete this exercise?')) {
-        const initialLength = this.exercises.length
-        const exerciseName = this.exercises.find((e) => e.id === exerciseId)?.name || 'Unknown Exercise'
-        this.exercises = this.exercises.filter((exercise) => exercise.id !== exerciseId)
-        if (this.exercises.length < initialLength) {
-          console.log('ExerciseStore: Deleted exercise - Name:', exerciseName)
-        } else {
-          console.warn('ExerciseStore: Exercise not found for deletion - ID:', exerciseId)
-        }
+      const initialLength = this.exercises.length
+      const exerciseName =
+        this.exercises.find((e) => e.id === exerciseId)?.name || 'Unknown Exercise'
+      this.exercises = this.exercises.filter((exercise) => exercise.id !== exerciseId)
+      if (this.exercises.length < initialLength) {
+        console.log('ExerciseStore: Deleted exercise - Name:', exerciseName)
+      } else {
+        console.warn('ExerciseStore: Exercise not found for deletion - ID:', exerciseId)
       }
     },
 
@@ -143,6 +140,6 @@ export const useExerciseStore = defineStore('exercise', {
       const exercise = this.exercises.find((e) => e.id === exerciseId)
       exercise.favorite = !exercise.favorite
       console.log('ExerciseStore: Set favorite of:', exercise.name, 'to', exercise.favorite)
-    }
-  }
+    },
+  },
 })
