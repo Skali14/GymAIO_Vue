@@ -13,7 +13,7 @@
           <form
             id="exercise-form"
             class="bg-white p-4 md:p-6 m-0 w-full box-border rounded-none shadow-none"
-            @submit.prevent="addOrUpdateExercise"
+            @submit.prevent="handleFormSubmit"
           >
             <div class="mb-5">
               <label for="exercise-name" class="block font-bold mb-2 text-[#555] text-sm"
@@ -206,7 +206,7 @@
             </h3>
             <div class="mt-6 overflow-x-auto">
               <table
-                v-if="myExercises.length > 0"
+                v-if="this.exerciseStore.myExercises.length > 0"
                 id="my"
                 class="w-full my-0 mb-5 border-collapse border-spacing-0 bg-white rounded-lg overflow-hidden shadow-table min-w-[650px]"
               >
@@ -241,7 +241,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    v-for="exercise in myExercises"
+                    v-for="exercise in this.exerciseStore.myExercises"
                     :key="exercise.id"
                     class="border-b border-custom-tableborder hover:bg-custom-tablehover"
                   >
@@ -272,7 +272,7 @@
                       </a>
                       <a
                         href="#delete"
-                        @click.prevent="deleteExercise(exercise.id)"
+                        @click.prevent="handleDeleteExercise(exercise.id)"
                         title="Delete exercise"
                         class="mx-1 md:mx-1.5 inline-block transition-transform duration-200 hover:scale-110"
                       >
@@ -286,7 +286,7 @@
                       </a>
                       <a
                         href="#favorite"
-                        @click.prevent="favoriteExercise(exercise.id)"
+                        @click.prevent="handleFavoriteExercise(exercise.id)"
                         title="Add to Favourites"
                         class="mx-1 md:mx-1.5 inline-block transition-transform duration-200 hover:scale-110"
                       >
@@ -302,7 +302,7 @@
                   </tr>
                 </tbody>
               </table>
-              <p v-if="myExercises.length === 0">You have not created any exercises yet.</p>
+              <p v-if="this.exerciseStore.myExercises.length === 0">You have not created any exercises yet.</p>
             </div>
           </article>
 
@@ -312,7 +312,7 @@
             </h3>
             <div class="mt-6 overflow-x-auto">
               <table
-                v-if="sharedExercises.length > 0"
+                v-if="this.exerciseStore.sharedExercises.length > 0"
                 id="shared"
                 class="w-full my-0 mb-5 border-collapse border-spacing-0 bg-white rounded-lg overflow-hidden shadow-table min-w-[650px]"
               >
@@ -347,7 +347,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    v-for="exercise in sharedExercises"
+                    v-for="exercise in this.exerciseStore.sharedExercises"
                     :key="exercise.id"
                     class="border-b border-custom-tableborder hover:bg-custom-tablehover"
                   >
@@ -364,7 +364,7 @@
                     <td class="py-2 px-2 md:py-3 md:px-4 text-center">
                       <a
                         href="#favorite"
-                        @click.prevent="favoriteExercise(exercise.id)"
+                        @click.prevent="handleFavoriteExercise(exercise.id)"
                         title="Add to Favourites"
                         class="mx-1 md:mx-1.5 inline-block transition-transform duration-200 hover:scale-110"
                       >
@@ -380,7 +380,7 @@
                   </tr>
                 </tbody>
               </table>
-              <p v-if="sharedExercises.length === 0">
+              <p v-if="this.exerciseStore.sharedExercises.length === 0">
                 No exercises could be fetched from the server.
               </p>
             </div>
@@ -392,92 +392,13 @@
 </template>
 
 <script>
-function createEmptyExercise() {
-  return {
-    id: null,
-    name: '',
-    description: '',
-    tags: [''],
-    difficulty: '',
-    image: null,
-    intensity: 1,
-    own: false,
-    favorite: false,
-  }
-}
+import { mapStores } from 'pinia'
+import { useExerciseStore, createEmptyExercise } from '@/stores/exerciseStore.js'
 
 export default {
   name: 'ExercisePage',
   data() {
     return {
-      exercises: [
-        {
-          id: Date.now() + 1,
-          name: 'Cable Flys',
-          description: 'Using cable tower to train chest.',
-          tags: ['push', 'upper-body', 'chest'],
-          difficulty: 'intermediate',
-          image: null,
-          intensity: 7,
-          own: true,
-          favorite: false,
-        },
-        {
-          id: Date.now() + 2,
-          name: 'Leg Extensions',
-          description: 'Ancient torture method.',
-          tags: ['legs'],
-          difficulty: 'beginner',
-          image: null,
-          intensity: 8,
-          own: true,
-          favorite: false,
-        },
-        {
-          id: Date.now() + 3,
-          name: 'Benchpress',
-          description: 'Most popular exercise',
-          tags: ['push', 'upper-body', 'chest'],
-          difficulty: 'intermediate',
-          image: null,
-          intensity: 9,
-          own: false,
-          favorite: false,
-        },
-        {
-          id: Date.now() + 4,
-          name: 'Barbell Row',
-          description: 'Advanced method for training back.',
-          tags: ['pull', 'back', 'upper-body'],
-          difficulty: 'advanced',
-          image: null,
-          intensity: 8,
-          own: false,
-          favorite: false,
-        },
-        {
-          id: Date.now() + 5,
-          name: 'Reverse Butterfly',
-          description: 'Using cable tower to train back and shoulders.',
-          tags: ['pull', 'shoulder', 'upper-body'],
-          difficulty: 'beginner',
-          image: null,
-          intensity: 6,
-          own: false,
-          favorite: false,
-        },
-        {
-          id: Date.now() + 6,
-          name: 'Squats',
-          description: 'Really advanced and mechanically complex exercise.',
-          tags: ['legs'],
-          difficulty: 'advanced',
-          image: null,
-          intensity: 9,
-          own: false,
-          favorite: false,
-        },
-      ],
       currentExercise: createEmptyExercise(),
       mobileMenuOpen: false,
       isEditing: false,
@@ -485,70 +406,34 @@ export default {
     }
   },
   computed: {
-    myExercises() {
-      return this.exercises
-        .filter((exercise) => exercise.own === true)
-        .sort((a, b) => a.name.localeCompare(b.name))
-    },
-    sharedExercises() {
-      return this.exercises
-        .filter((exercise) => exercise.own === false)
-        .sort((a, b) => a.name.localeCompare(b.name))
-    },
+    ...mapStores(useExerciseStore)
   },
   methods: {
-    addOrUpdateExercise() {
-      if (!this.currentExercise.name) {
-        alert('Please fill in at least the name.')
-        return
-      }
-
+    handleFormSubmit() {
       if (this.isEditing) {
-        const index = this.exercises.findIndex(
-          (exercise) => exercise.id === this.currentExercise.id,
-        )
-        if (index !== -1) {
-          this.exercises.splice(index, 1, { ...this.currentExercise })
-        }
-        console.log('Updated exercise:', this.currentExercise)
+        this.exerciseStore.updateExercise({ ...this.currentExercise }) // Access action via dishStore
       } else {
-        // Add new exercise
-        const newExercise = {
-          ...this.currentExercise,
-          id: Date.now(),
-          own: true,
-        }
-        this.exercises.push(newExercise)
-        console.log('Added new exercise:', newExercise.name)
-        console.log(newExercise)
+        this.exerciseStore.addExercise({ ...this.currentExercise }) // Access action via dishStore
       }
-
-      // Reset form and editing state
       this.resetForm()
     },
-    deleteExercise(exerciseId) {
-      if (confirm('Are you sure you want to delete this item?')) {
-        const exerciseName =
-          this.exercises.find((e) => e.id === exerciseId)?.name || 'Unknown Exercise'
-        this.exercises = this.exercises.filter((exercise) => exercise.id !== exerciseId)
-        console.log('Deleted exercise ID:', exerciseId, 'Name:', exerciseName)
-        if (this.isEditing && this.currentExercise.id === exerciseId) {
-          this.resetForm()
-        }
-      }
+    handleFavoriteExercise(exerciseId) {
+      this.exerciseStore.favoriteExercise(exerciseId)
     },
-    favoriteExercise(exerciseId) {
-      const exercise = this.exercises.find((e) => e.id === exerciseId)
-      exercise.favorite = !exercise.favorite
-      console.log('Set favorite of:', exercise.name, 'to', exercise.favorite)
+
+    handleDeleteExercise(deletedExerciseId) {
+      // Check if the deleted dish is the one currently being edited
+      this.exerciseStore.deleteExercise(deletedExerciseId)
+
+      if (this.isEditing && this.currentExercise.id === deletedExerciseId) {
+        console.log('ExercisePage: The currently edited exercise was deleted. Resetting form.')
+        this.resetForm()
+      }
     },
     resetForm() {
       this.currentExercise = createEmptyExercise()
       this.fileInputKey++
       this.isEditing = false
-    },
-    toggleMobileMenu() {
-      this.mobileMenuOpen = !this.mobileMenuOpen
     },
     formatEntry(str) {
       return str
@@ -564,9 +449,10 @@ export default {
       this.currentExercise.image = file
     },
     startEdit(exerciseToEdit) {
-      this.currentExercise = Object.assign({}, exerciseToEdit)
+      this.currentExercise = { ...exerciseToEdit }
       this.isEditing = true
-      console.log('Started editing:', exerciseToEdit.name)
+      console.log('ExercisePage: Editing exercise -', exerciseToEdit.name)
+      document.getElementById('exercise-form')?.scrollIntoView({ behavior: 'smooth' })
     },
     cancelEdit() {
       this.resetForm()
