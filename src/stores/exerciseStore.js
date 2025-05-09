@@ -111,7 +111,7 @@ export const useExerciseStore = defineStore('exercise', {
         own: true,
       }
       this.exercises.push(newExercise)
-      console.log('Added new exercise:', newExercise.name)
+      console.log('Added new exercise:', newExercise)
     },
 
     updateExercise(updatedExerciseData) {
