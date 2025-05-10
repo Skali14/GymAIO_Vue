@@ -101,7 +101,7 @@ const headerTitle = computed(() => {
   </div>
   <div class="bg-[#f4f4f4] text-[#333] font-sans m-0 p-0 flex flex-col items-center">
     <footer class="bg-custom-footer p-4 text-center rounded-lg mx-auto my-5 shadow">
-      <p class="my-1 text-custom-footertext font-bold">GymAIO - Exercise Management</p>
+      <p class="my-1 text-custom-footertext font-bold">GymAIO - {{ headerTitle }}</p>
       <p class="my-1 text-custom-footertext font-bold">
         &copy; 2025 - Michael Pittlik and Simon Kadlec
       </p>
