@@ -86,12 +86,12 @@ onUnmounted(() => {
 
           <!-- Desktop Navigation -->
           <nav class="hidden md:block">
-            <ul class="flex items-center space-x-1">
+            <ul class="flex items-center flex-wrap space-x-0.5">
               <li>
                 <RouterLink
                   to="/exercises"
                   :class="[
-                    'px-3 py-2 rounded-md font-medium transition-all duration-200',
+                    'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
                   ]"
                   active-class="bg-blue-700 text-white"
@@ -101,7 +101,7 @@ onUnmounted(() => {
                 <RouterLink
                   to="/exercises"
                   :class="[
-                    'px-3 py-2 rounded-md font-medium transition-all duration-200',
+                    'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
                   ]"
                   active-class="bg-blue-700 text-white"
@@ -111,7 +111,7 @@ onUnmounted(() => {
                 <RouterLink
                   to="/exercises"
                   :class="[
-                    'px-3 py-2 rounded-md font-medium transition-all duration-200',
+                    'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
                   ]"
                   active-class="bg-blue-700 text-white"
@@ -121,7 +121,7 @@ onUnmounted(() => {
                 <RouterLink
                   to="/calorietracker"
                   :class="[
-                    'px-3 py-2 rounded-md font-medium transition-all duration-200',
+                    'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
                   ]"
                   active-class="bg-blue-700 text-white"
@@ -131,7 +131,7 @@ onUnmounted(() => {
                 <RouterLink
                   to="/exercises"
                   :class="[
-                    'px-3 py-2 rounded-md font-medium transition-all duration-200',
+                    'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
                   ]"
                   active-class="bg-blue-700 text-white"
@@ -141,7 +141,7 @@ onUnmounted(() => {
                 <RouterLink
                   to="/exercises"
                   :class="[
-                    'px-4 py-2 rounded-md font-medium border-2 transition-all duration-200 ml-2',
+                    'px-3 py-1.5 rounded-md text-sm font-medium border-2 transition-all duration-200 ml-1 whitespace-nowrap',
                     isScrolled 
                       ? 'border-blue-500 text-blue-600 hover:bg-blue-500 hover:text-white' 
                       : 'border-white text-white hover:bg-white hover:text-blue-600'
