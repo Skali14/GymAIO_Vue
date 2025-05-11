@@ -15,6 +15,11 @@ const router = createRouter({
       name: 'exercises',
       component: ExerciseView,
     },
+    {
+      path: '/',
+      name: 'exercises2',
+      component: ExerciseView,
+    },
   ],
 })
 

@@ -8,6 +8,8 @@ const headerTitle = computed(() => {
   switch (route.name) {
     case 'exercises':
       return 'Exercise Management'
+    case 'exercises2':
+      return 'Exercise Management'
     case 'calorietracker':
       return 'Calorie Tracker'
     default:
