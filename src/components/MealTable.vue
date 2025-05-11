@@ -1,6 +1,5 @@
 <template>
           <section class="bg-white p-6 my-5 mx-auto rounded-xl shadow-md max-w-3xl">
-            <h2 class="text-center text-gray-800 font-bold mb-4 text-2xl">My Meals Today</h2>
             <div class="overflow-x-auto">
               <table class="w-full border-collapse bg-white rounded-lg overflow-hidden">
                 <thead>

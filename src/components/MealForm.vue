@@ -1,8 +1,6 @@
 <template>
-        <section class="bg-white p-6 mx-auto rounded-xl shadow-md max-w-3xl" id="meal-form">
+        <section class="bg-white p-6 mx-auto rounded-xl max-w-3xl" id="meal-form">
             <form @submit.prevent="handleSubmit">
-                <h2 class="text-center text-gray-800 font-bold mb-4 text-2xl">{{ isEditing ? 'Edit Meal' : 'Add Meal' }}</h2>
-
                 <div class="mb-4">
                     <label for="meal-name" class="font-bold">Name:</label>
                     <input type="text" id="meal-name"
