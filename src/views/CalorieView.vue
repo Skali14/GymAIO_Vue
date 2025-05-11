@@ -44,13 +44,25 @@
               </td>
               <td class="p-3 border-b border-gray-300 text-center">
                 <div class="inline-flex justify-center gap-2 items-center">
-                  <a href="#" @click.prevent="startEditGoal('calories', goal.calories)" v-if="editingGoalType !== 'calories'">
+                  <a
+                    href="#"
+                    @click.prevent="startEditGoal('calories', goal.calories)"
+                    v-if="editingGoalType !== 'calories'"
+                  >
                     <img src="/edit.svg" alt="Modify" width="16" height="16" />
                   </a>
-                  <a href="#" @click.prevent="saveGoal('calories')" v-if="editingGoalType === 'calories'">
+                  <a
+                    href="#"
+                    @click.prevent="saveGoal('calories')"
+                    v-if="editingGoalType === 'calories'"
+                  >
                     <span class="text-green-600 font-bold">✓</span>
                   </a>
-                  <a href="#" @click.prevent="cancelEditGoal()" v-if="editingGoalType === 'calories'">
+                  <a
+                    href="#"
+                    @click.prevent="cancelEditGoal()"
+                    v-if="editingGoalType === 'calories'"
+                  >
                     <span class="text-red-600 font-bold">✗</span>
                   </a>
                   <a href="#" @click.prevent="deleteGoal('calories')">
@@ -81,16 +93,30 @@
                 </div>
                 <div v-else>{{ goal.proteins }}</div>
               </td>
-              <td class="p-3 border-b border-gray-300 text-center">{{ mealStore.currentProteins }}</td>
+              <td class="p-3 border-b border-gray-300 text-center">
+                {{ mealStore.currentProteins }}
+              </td>
               <td class="p-3 border-b border-gray-300 text-center">
                 <div class="inline-flex justify-center gap-2 items-center">
-                  <a href="#" @click.prevent="startEditGoal('proteins', goal.proteins)" v-if="editingGoalType !== 'proteins'">
+                  <a
+                    href="#"
+                    @click.prevent="startEditGoal('proteins', goal.proteins)"
+                    v-if="editingGoalType !== 'proteins'"
+                  >
                     <img src="/edit.svg" alt="Modify" width="16" height="16" />
                   </a>
-                  <a href="#" @click.prevent="saveGoal('proteins')" v-if="editingGoalType === 'proteins'">
+                  <a
+                    href="#"
+                    @click.prevent="saveGoal('proteins')"
+                    v-if="editingGoalType === 'proteins'"
+                  >
                     <span class="text-green-600 font-bold">✓</span>
                   </a>
-                  <a href="#" @click.prevent="cancelEditGoal()" v-if="editingGoalType === 'proteins'">
+                  <a
+                    href="#"
+                    @click.prevent="cancelEditGoal()"
+                    v-if="editingGoalType === 'proteins'"
+                  >
                     <span class="text-red-600 font-bold">✗</span>
                   </a>
                   <a href="#" @click.prevent="deleteGoal('proteins')">
@@ -121,16 +147,30 @@
                 </div>
                 <div v-else>{{ goal.carbohydrates }}</div>
               </td>
-              <td class="p-3 border-b border-gray-300 text-center">{{ mealStore.currentCarbohydrates }}</td>
+              <td class="p-3 border-b border-gray-300 text-center">
+                {{ mealStore.currentCarbohydrates }}
+              </td>
               <td class="p-3 border-b border-gray-300 text-center">
                 <div class="inline-flex justify-center gap-2 items-center">
-                  <a href="#" @click.prevent="startEditGoal('carbohydrates', goal.carbohydrates)" v-if="editingGoalType !== 'carbohydrates'">
+                  <a
+                    href="#"
+                    @click.prevent="startEditGoal('carbohydrates', goal.carbohydrates)"
+                    v-if="editingGoalType !== 'carbohydrates'"
+                  >
                     <img src="/edit.svg" alt="Modify" width="16" height="16" />
                   </a>
-                  <a href="#" @click.prevent="saveGoal('carbohydrates')" v-if="editingGoalType === 'carbohydrates'">
+                  <a
+                    href="#"
+                    @click.prevent="saveGoal('carbohydrates')"
+                    v-if="editingGoalType === 'carbohydrates'"
+                  >
                     <span class="text-green-600 font-bold">✓</span>
                   </a>
-                  <a href="#" @click.prevent="cancelEditGoal()" v-if="editingGoalType === 'carbohydrates'">
+                  <a
+                    href="#"
+                    @click.prevent="cancelEditGoal()"
+                    v-if="editingGoalType === 'carbohydrates'"
+                  >
                     <span class="text-red-600 font-bold">✗</span>
                   </a>
                   <a href="#" @click.prevent="deleteGoal('carbohydrates')">
@@ -143,7 +183,10 @@
             <!-- Progress bar for Carbohydrates -->
             <tr class="hover:bg-gray-200">
               <td colspan="4" class="p-3 border-b border-gray-300">
-                <ProgressBar :current="mealStore.currentCarbohydrates" :toReach="goal.carbohydrates" />
+                <ProgressBar
+                  :current="mealStore.currentCarbohydrates"
+                  :toReach="goal.carbohydrates"
+                />
               </td>
             </tr>
 
@@ -164,7 +207,11 @@
               <td class="p-3 border-b border-gray-300 text-center">{{ mealStore.currentFats }}</td>
               <td class="p-3 border-b border-gray-300 text-center">
                 <div class="inline-flex justify-center gap-2 items-center">
-                  <a href="#" @click.prevent="startEditGoal('fats', goal.fats)" v-if="editingGoalType !== 'fats'">
+                  <a
+                    href="#"
+                    @click.prevent="startEditGoal('fats', goal.fats)"
+                    v-if="editingGoalType !== 'fats'"
+                  >
                     <img src="/edit.svg" alt="Modify" width="16" height="16" />
                   </a>
                   <a href="#" @click.prevent="saveGoal('fats')" v-if="editingGoalType === 'fats'">
@@ -201,96 +248,98 @@
 </template>
 
 <script>
-  import MealForm from '@/components/MealForm.vue'
-  import MealTable from '@/components/MealTable.vue'
-  import { mapStores } from 'pinia'
-  import { useMealStore, createEmptyMeal } from '@/stores/mealStore.js'
-  import ProgressBar from '@/components/ProgressBar.vue' // Import the ProgressBar component
+import MealForm from '@/components/MealForm.vue'
+import MealTable from '@/components/MealTable.vue'
+import { mapStores } from 'pinia'
+import { useMealStore, createEmptyMeal } from '@/stores/mealStore.js'
+import ProgressBar from '@/components/ProgressBar.vue' // Import the ProgressBar component
 
-  export default {
-      name: 'CalorieView',
-      components: {MealForm, MealTable, ProgressBar},
-      data() { return {
-          goal: {
-            calories: 2500,
-            proteins: 180,
-            carbohydrates: 300,
-            fats: 80
-          },
-          // Track the goal being edited
-          editingGoalType: null,
-          editingGoalValue: 0,
-          
-          currentMeal: createEmptyMeal(),
-          isEditing: false,
-      } },
-      computed: {
-            ...mapStores(useMealStore),
+export default {
+  name: 'CalorieView',
+  components: { MealForm, MealTable, ProgressBar },
+  data() {
+    return {
+      goal: {
+        calories: 2500,
+        proteins: 180,
+        carbohydrates: 300,
+        fats: 80,
       },
-      methods: {
-          handleFormSubmit() {
-            if (this.isEditing) {
-              this.mealStore.updateMeal({ ...this.currentMeal }) // Access action via mealStore
-            } else {
-              this.mealStore.addMeal({ ...this.currentMeal }) // Access action via mealStore
-            }
-            this.resetForm()
-          },
-          startEdit(mealToEdit) {
-              this.currentMeal = {...mealToEdit};
-              this.isEditing = true;
-              console.log('Started editing:', mealToEdit.name);
-              document.getElementById('meal-form').scrollIntoView();
-          },
-          cancelEdit() {
-              this.resetForm();
-              console.log('Cancelled edit.');
-          },
-                    // New method to handle the event emitted from MealTable after deletion
-          handleMealDeleted(deletedMealId) {
-            console.log('CaloriePage: Received meal-deleted event for ID', deletedMealId)
-            // Check if the deleted meal is the one currently being edited
-            if (this.isEditing && this.currentMeal.id === deletedMealId) {
-              console.log('CaloriePage: The currently edited meal was deleted. Resetting form.')
-              this.resetForm()
-            }
-          },
-          resetForm() {
-              this.currentMeal = createEmptyMeal();
-              this.isEditing = false;
-          },
-          
-          // Goal management methods
-          startEditGoal(type, value) {
-              this.editingGoalType = type;
-              this.editingGoalValue = value;
-          },
-          saveGoal(type) {
-              if (this.editingGoalValue < 0) {
-                  alert('Goal value cannot be negative.');
-                  return;
-              }
-              
-              // Update goal value
-              this.goal[type] = this.editingGoalValue;
-              console.log(`Updated ${type} goal to:`, this.editingGoalValue);
-              
-              // Reset editing state
-              this.editingGoalType = null;
-              this.editingGoalValue = 0;
-          },
-          cancelEditGoal() {
-              this.editingGoalType = null;
-              this.editingGoalValue = 0;
-          },
-          deleteGoal(type) {
-              if (confirm(`Are you sure you want to delete the ${type} goal?`)) {
-                  this.goal[type] = 0;
-                  console.log(`Deleted ${type} goal.`);
-              }
-          }
+      // Track the goal being edited
+      editingGoalType: null,
+      editingGoalValue: 0,
+
+      currentMeal: createEmptyMeal(),
+      isEditing: false,
+    }
+  },
+  computed: {
+    ...mapStores(useMealStore),
+  },
+  methods: {
+    handleFormSubmit() {
+      if (this.isEditing) {
+        this.mealStore.updateMeal({ ...this.currentMeal }) // Access action via mealStore
+      } else {
+        this.mealStore.addMeal({ ...this.currentMeal }) // Access action via mealStore
       }
-  };
+      this.resetForm()
+    },
+    startEdit(mealToEdit) {
+      this.currentMeal = { ...mealToEdit }
+      this.isEditing = true
+      console.log('Started editing:', mealToEdit.name)
+      document.getElementById('meal-form').scrollIntoView()
+    },
+    cancelEdit() {
+      this.resetForm()
+      console.log('Cancelled edit.')
+    },
+    // New method to handle the event emitted from MealTable after deletion
+    handleMealDeleted(deletedMealId) {
+      console.log('CaloriePage: Received meal-deleted event for ID', deletedMealId)
+      // Check if the deleted meal is the one currently being edited
+      if (this.isEditing && this.currentMeal.id === deletedMealId) {
+        console.log('CaloriePage: The currently edited meal was deleted. Resetting form.')
+        this.resetForm()
+      }
+    },
+    resetForm() {
+      this.currentMeal = createEmptyMeal()
+      this.isEditing = false
+    },
+
+    // Goal management methods
+    startEditGoal(type, value) {
+      this.editingGoalType = type
+      this.editingGoalValue = value
+    },
+    saveGoal(type) {
+      if (this.editingGoalValue < 0) {
+        alert('Goal value cannot be negative.')
+        return
+      }
+
+      // Update goal value
+      this.goal[type] = this.editingGoalValue
+      console.log(`Updated ${type} goal to:`, this.editingGoalValue)
+
+      // Reset editing state
+      this.editingGoalType = null
+      this.editingGoalValue = 0
+    },
+    cancelEditGoal() {
+      this.editingGoalType = null
+      this.editingGoalValue = 0
+    },
+    deleteGoal(type) {
+      if (confirm(`Are you sure you want to delete the ${type} goal?`)) {
+        this.goal[type] = 0
+        console.log(`Deleted ${type} goal.`)
+      }
+    },
+  },
+}
 </script>
 
 <style scoped></style>

@@ -1,76 +1,109 @@
 <template>
-        <section class="bg-white p-6 mx-auto rounded-xl shadow-md max-w-3xl" id="meal-form">
-            <form @submit.prevent="handleSubmit">
-                <h2 class="text-center text-gray-800 font-bold mb-4 text-2xl">{{ isEditing ? 'Edit Meal' : 'Add Meal' }}</h2>
+  <section class="bg-white p-6 mx-auto rounded-xl shadow-md max-w-3xl" id="meal-form">
+    <form @submit.prevent="handleSubmit">
+      <h2 class="text-center text-gray-800 font-bold mb-4 text-2xl">
+        {{ isEditing ? 'Edit Meal' : 'Add Meal' }}
+      </h2>
 
-                <div class="mb-4">
-                    <label for="meal-name" class="font-bold">Name:</label>
-                    <input type="text" id="meal-name"
-                        :value="modelValue.name"
-                        @input="updateField('name', $event.target.value)"
-                        name="meal-name" required class="w-full p-3 border border-gray-500 rounded-md text-base">
-                </div>
+      <div class="mb-4">
+        <label for="meal-name" class="font-bold">Name:</label>
+        <input
+          type="text"
+          id="meal-name"
+          :value="modelValue.name"
+          @input="updateField('name', $event.target.value)"
+          name="meal-name"
+          required
+          class="w-full p-3 border border-gray-500 rounded-md text-base"
+        />
+      </div>
 
-                <div class="mb-4">
-                    <label for="meal-calories" class="font-bold">Calories:</label>
-                    <input type="number" 
-                        id="meal-calories"
-                        :value="modelValue.calories"
-                        @input="updateField('calories', $event.target.value)"
-                        name="meal-calories" min="0"
-                        required
-                        class="w-full p-3 border border-gray-500 rounded-md text-base">
-                </div>
+      <div class="mb-4">
+        <label for="meal-calories" class="font-bold">Calories:</label>
+        <input
+          type="number"
+          id="meal-calories"
+          :value="modelValue.calories"
+          @input="updateField('calories', $event.target.value)"
+          name="meal-calories"
+          min="0"
+          required
+          class="w-full p-3 border border-gray-500 rounded-md text-base"
+        />
+      </div>
 
-                <div class="mb-4">
-                    <label for="meal-proteins" class="font-bold">Proteins:</label>
-                    <input type="number"
-                        id="meal-proteins"
-                        :value = "modelValue.proteins"
-                        @input="updateField('proteins', $event.target.value)"
-                        name="meal-proteins" min="0" class="w-full p-3 border border-gray-500 rounded-md text-base">
-                </div>
+      <div class="mb-4">
+        <label for="meal-proteins" class="font-bold">Proteins:</label>
+        <input
+          type="number"
+          id="meal-proteins"
+          :value="modelValue.proteins"
+          @input="updateField('proteins', $event.target.value)"
+          name="meal-proteins"
+          min="0"
+          class="w-full p-3 border border-gray-500 rounded-md text-base"
+        />
+      </div>
 
-                <div class="mb-4">
-                    <label for="meal-carbohydrates" class="font-bold">Carbohydrates:</label>
-                    <input type="number"
-                    id="meal-carbohydrates"
-                    :value = "modelValue.carbohydrates"
-                    @input="updateField('carbohydrates', $event.target.value)"
-                    name="meal-carbohydrates" min="0" class="w-full p-3 border border-gray-500 rounded-md text-base">
-                </div>
+      <div class="mb-4">
+        <label for="meal-carbohydrates" class="font-bold">Carbohydrates:</label>
+        <input
+          type="number"
+          id="meal-carbohydrates"
+          :value="modelValue.carbohydrates"
+          @input="updateField('carbohydrates', $event.target.value)"
+          name="meal-carbohydrates"
+          min="0"
+          class="w-full p-3 border border-gray-500 rounded-md text-base"
+        />
+      </div>
 
-                <div class="mb-4">
-                    <label for="meal-fats" class="font-bold">Fats:</label>
-                    <input type="number"
-                    id="meal-fats"
-                    :value = "modelValue.fats"
-                    @input="updateField('fats', $event.target.value)"
-                    name="meal-fats" 
-                    min="0" class="w-full p-3 border border-gray-500 rounded-md text-base">
-                </div>
+      <div class="mb-4">
+        <label for="meal-fats" class="font-bold">Fats:</label>
+        <input
+          type="number"
+          id="meal-fats"
+          :value="modelValue.fats"
+          @input="updateField('fats', $event.target.value)"
+          name="meal-fats"
+          min="0"
+          class="w-full p-3 border border-gray-500 rounded-md text-base"
+        />
+      </div>
 
-                <div class="mb-4">
-                    <label for="meal-vegetarian" class="flex items-center justify-start gap-3 font-bold">Vegetarian:
-                    <input type="checkbox" id="meal-vegetarian"
-                    :checked = "modelValue.vegetarian"
-                    @input="updateField('vegetarian', $event.target.checked)"
-                    name="meal-vegetarian" class="w-auto h-auto flex-shrink-0">
-                    </label>
-                </div>
+      <div class="mb-4">
+        <label for="meal-vegetarian" class="flex items-center justify-start gap-3 font-bold"
+          >Vegetarian:
+          <input
+            type="checkbox"
+            id="meal-vegetarian"
+            :checked="modelValue.vegetarian"
+            @input="updateField('vegetarian', $event.target.checked)"
+            name="meal-vegetarian"
+            class="w-auto h-auto flex-shrink-0"
+          />
+        </label>
+      </div>
 
-                <div :class="isEditing ? 'flex gap-4' : ''">
-                    <button type="submit" class="w-full p-3 bg-gray-500 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-blue-800 hover:scale-105 hover:border-2 hover:border-gray-200">
-                    {{ isEditing ? 'Confirm Edit' : 'Submit Meal' }}
-                    </button>
-                    
-                    <button
-                    v-if="isEditing" type="button" @click="handleCancel" class="w-full p-3 bg-gray-500 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-blue-800 hover:scale-105 hover:border-2 hover:border-gray-200">
-                    Cancel Edit
-                    </button>
-                </div>
-            </form>
-        </section>
+      <div :class="isEditing ? 'flex gap-4' : ''">
+        <button
+          type="submit"
+          class="w-full p-3 bg-gray-500 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-blue-800 hover:scale-105 hover:border-2 hover:border-gray-200"
+        >
+          {{ isEditing ? 'Confirm Edit' : 'Submit Meal' }}
+        </button>
+
+        <button
+          v-if="isEditing"
+          type="button"
+          @click="handleCancel"
+          class="w-full p-3 bg-gray-500 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-blue-800 hover:scale-105 hover:border-2 hover:border-gray-200"
+        >
+          Cancel Edit
+        </button>
+      </div>
+    </form>
+  </section>
 </template>
 
 <script>
