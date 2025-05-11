@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-  // Initial dish data structure helper
+  // Initial meal data structure helper
 export function createEmptyMeal() {
       return {
           id: null, // Important: null for new, set during edit
@@ -24,24 +24,22 @@ export const useMealStore = defineStore('meal', {
   }),
 
     getters: {
-    // Functions to get filtered and sorted lists for display
-        currentCalories: (state) => {
-            return state.meals.reduce((total, meal) => total + meal.calories, 0);
-        },
-        currentProteins: (state) => {
-            return state.meals.reduce((total, meal) => total + meal.proteins, 0);
-        },
-        currentCarbohydrates: (state) => {
-            return state.meals.reduce((total, meal) => total + meal.carbohydrates, 0);
-        },
-        currentFats: (state) => {
-            return state.meals.reduce((total, meal) => total + meal.fats, 0);
-        },
-        // Getter to get the total count (example)
-        mealCount: (state) => state.meals.length,
+    currentCalories: (state) => {
+        return state.meals.reduce((total, meal) => total + (Number(meal.calories) || 0), 0);
+    },
+    currentProteins: (state) => {
+        return state.meals.reduce((total, meal) => total + (Number(meal.proteins) || 0), 0);
+    },
+    currentCarbohydrates: (state) => {
+        return state.meals.reduce((total, meal) => total + (Number(meal.carbohydrates) || 0), 0);
+    },
+    currentFats: (state) => {
+        return state.meals.reduce((total, meal) => total + (Number(meal.fats) || 0), 0);
+    },
+    mealCount: (state) => state.meals.length,
+    allMeals: (state) => state.meals,
+    },
 
-        allMeals: (state) => state.meals,
-  },
 
     // Actions: Methods to modify the state
   actions: {

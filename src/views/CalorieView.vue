@@ -204,10 +204,10 @@
               this.resetForm();
               console.log('Cancelled edit.');
           },
-                    // New method to handle the event emitted from DishTable after deletion
+                    // New method to handle the event emitted from MealTable after deletion
           handleMealDeleted(deletedMealId) {
             console.log('CaloriePage: Received meal-deleted event for ID', deletedMealId)
-            // Check if the deleted dish is the one currently being edited
+            // Check if the deleted meal is the one currently being edited
             if (this.isEditing && this.currentMeal.id === deletedMealId) {
               console.log('CaloriePage: The currently edited meal was deleted. Resetting form.')
               this.resetForm()
