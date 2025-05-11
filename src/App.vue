@@ -47,7 +47,7 @@ const headerTitle = computed(() => {
     <nav
       id="nav-menu"
       :class="[
-        'bg-custom-nav p-4 text-center w-full mt-5',
+        'bg-custom-nav rounded-lg p-4 text-center w-full mt-5',
         mobileMenuOpen ? 'block' : 'hidden',
         'md:block',
       ]"
