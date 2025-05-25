@@ -170,9 +170,7 @@
       startEdit(mealToEdit) {
         this.currentMeal = { ...mealToEdit };
         this.isEditing = true;
-        document.getElementById('meal-form').scrollIntoView({
-          behavior: 'smooth'
-        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       },
       cancelEdit() {
         this.resetForm();
@@ -211,7 +209,7 @@
         this.editingGoalType = null;
         this.editingGoalValue = 0;
       },
-      
+
       async deleteGoal(type) {
         if (confirm(`Are you sure you want to delete the ${type} goal?`)) {
           try {
