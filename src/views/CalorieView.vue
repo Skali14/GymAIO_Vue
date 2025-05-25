@@ -36,9 +36,9 @@
           <!-- Goal Cards Grid -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <!-- Loop through the goals and display -->
-            <div 
-              v-for="(goalValue, goalType) in goal" 
-              :key="goalType" 
+            <div
+              v-for="(goalValue, goalType) in goal"
+              :key="goalType"
               class="bg-gray-50 p-4 rounded-lg border border-gray-200 transition-all hover:shadow-md"
             >
               <div class="flex justify-between items-center mb-3">
@@ -140,7 +140,7 @@
   import axios from 'axios'
 
   const apiClient = axios.create({
-  baseURL: 'http://localhost:3000', // Adjust if your backend runs elsewhere  
+  baseURL: 'http://localhost:3000', // Adjust if your backend runs elsewhere
   });
 
   export default {
@@ -228,7 +228,7 @@
       },
       async getAllGoals() {
         try {
-          const response = await apiClient.get("/api/goals/")
+          const response = await apiClient.get("/api/goals")
           this.goal = response.data.goals
         } catch (error) {
           this.handleApiError(error, "Failed to get goals")
