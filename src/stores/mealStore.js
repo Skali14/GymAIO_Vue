@@ -1,4 +1,10 @@
 import { defineStore } from 'pinia'
+import axios from 'axios'
+
+const apiClient = axios.create({
+  baseURL: 'http://localhost:3000', // Adjust if your backend runs elsewhere
+});
+
 
   // Initial meal data structure helper
 export function createEmptyMeal() {
@@ -16,11 +22,7 @@ export function createEmptyMeal() {
 export const useMealStore = defineStore('meal', {
       // State: Contains the raw data
   state: () => ({
-        meals: [
-        // Some initial example data
-        { id: Date.now() + 1, name: 'Spaghetti Bolognese', calories: 800, proteins: 16, carbohydrates: 52, fats: 9, vegetarian: false },
-        { id: Date.now() + 2, name: 'Skyr (500g)', calories: 310, proteins: 55, carbohydrates: 20, fats: 2, vegetarian: true },
-        ],
+        meals: [],
   }),
 
     getters: {
@@ -43,39 +45,73 @@ export const useMealStore = defineStore('meal', {
 
     // Actions: Methods to modify the state
   actions: {
-    // Action to add a new dish
-    addMeal(mealData) {
-      // Ensure it's a copy and assign a new ID
-      const newMeal = {
-        ...mealData, // Use data passed from the form
-        id: Date.now(), // Generate unique ID in the action
+    async getAllMeals() {
+      try {
+        const response = await apiClient.get('/api/meals');
+        this.meals = response.data.meals;
+      } catch (error) {
+        this.handleApiError(error, 'Failed to fetch meals');
       }
-      this.meals.push(newMeal) // Mutate state directly within actions
-      console.log('MealStore: Added meal -', newMeal.name)
+    },
+
+    // Action to add a new dish
+    async addMeal(mealData) {
+      try {
+        const response = await apiClient.post('/api/meals', mealData);
+      // Add the newly created dish (with ID from server) to the local array
+        this.meals.push(response.data);
+      console.log('Added new meal:', response.data.name);
+      } catch (error) {
+        this.handleApiError(error, `Failed to add meal`);
+      }
+      
     },
 
     // Action to update an existing dish
-    updateMeal(updatedMealData) {
-      const index = this.meals.findIndex((meals) => meals.id === updatedMealData.id)
-      if (index !== -1) {
-        // Replace the item at the found index with the updated data
-        this.meals.splice(index, 1, { ...updatedMealData }) // Use a copy
-        console.log('MealStore: Updated meal -', updatedMealData.name)
-      } else {
-        console.warn('DishStore: Dish not found for update - ID:', updatedMealData.id)
+    async updateMeal(updatedMealData) {
+      try {
+        // Update existing meal
+        const response = await apiClient.put(`/api/meals/${updatedMealData.id}`, updatedMealData);
+        // Update the local array with the response from the server
+
+        const index = this.meals.findIndex((meals) => meals.id === updatedMealData.id)
+        if (index !== -1) {
+          // Replace the item at the found index with the updated data
+          this.meals.splice(index, 1, { ...updatedMealData }) // Use a copy
+          console.log('MealStore: Updated meal -', updatedMealData.name)
+        } else {
+          console.warn('Mealstore: Meal not found for update - ID:', updatedMealData.id)
+        }
+      } catch (error) {
+        this.handleApiError(error, `Failed to update Meal`);
       }
+      
     },
 
     // Action to delete a dish by its ID
-    deleteMeal(mealId) {
-      const initialLength = this.meals.length
-      // Filter the array, keeping only dishes that DON'T match the ID
-      this.meals = this.meals.filter((meal) => meal.id !== mealId)
+    async deleteMeal(mealId) {
+      try {
+        await apiClient.delete(`/api/meals/${mealId}`);
+        // Filter the array, keeping only dishes that DON'T match the ID
+        this.meals = this.meals.filter((meal) => meal.id !== mealId)
+        console.log('Deleted meal ID:', mealId);
+      } catch (error) {
+        this.handleApiError(error, "Failed to delete meal")
+      }
+    },
 
-      if (this.meals.length < initialLength) {
-        console.log('MealStore: Deleted meal - ID:', mealId)
+    handleApiError(error, contextMessage = 'An API error occurred') {
+      console.error(contextMessage, error); // Log the full error for debugging
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        this.latestErrorMessage = error.response.data;
+      } else if (error.request) {
+        // The request was made but no response was received
+        this.latestErrorMessage = 'No response from server. Please check your network connection.';
       } else {
-        console.warn('MealStore: Meal not found for deletion - ID:', mealId)
+        // Something happened in setting up the request that triggered an Error
+        this.latestErrorMessage = error.message || 'Error setting up the request.';
       }
     },
   },

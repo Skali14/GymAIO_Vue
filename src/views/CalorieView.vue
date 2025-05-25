@@ -137,18 +137,18 @@
   import { mapStores } from 'pinia';
   import { useMealStore, createEmptyMeal } from '@/stores/mealStore.js';
   import ProgressBar from '@/components/ProgressBar.vue';
+  import axios from 'axios'
+
+  const apiClient = axios.create({
+  baseURL: 'http://localhost:3000', // Adjust if your backend runs elsewhere  
+  });
 
   export default {
     name: 'CalorieView',
     components: { MealForm, MealTable, ProgressBar },
     data() {
       return {
-        goal: {
-          calories: 2500,
-          proteins: 180,
-          carbohydrates: 300,
-          fats: 80,
-        },
+        goal: {},
         editingGoalType: null,
         editingGoalValue: 0,
         currentMeal: createEmptyMeal(),
@@ -190,27 +190,73 @@
         this.editingGoalType = type;
         this.editingGoalValue = value;
       },
-      saveGoal(type) {
+      async saveGoal(type) {
         if (this.editingGoalValue < 0) {
           alert('Goal value cannot be negative.');
           return;
         }
-        this.goal[type] = this.editingGoalValue;
-        this.editingGoalType = null;
-        this.editingGoalValue = 0;
+        try {
+          const response = await apiClient.put('/api/goals', {
+            goalType: type,
+            value: this.editingGoalValue
+          });
+          this.goal[type] = this.editingGoalValue;
+          this.editingGoalType = null;
+          this.editingGoalValue = 0;
+        } catch (error) {
+          this.handleApiError(error, "Failed to update goal")
+        }
       },
       cancelEditGoal() {
         this.editingGoalType = null;
         this.editingGoalValue = 0;
       },
-      deleteGoal(type) {
+      
+      async deleteGoal(type) {
         if (confirm(`Are you sure you want to delete the ${type} goal?`)) {
-          this.goal[type] = 0;
+          try {
+            const response = await apiClient.put('/api/goals', {
+              goalType: type,
+              value: 0
+            });
+            this.goal[type] = 0;
+          } catch (error) {
+            this.handleApiError(error, "Failed to delete goal")
+          }
         }
       },
       capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
-      }
-    }
+      },
+      async getAllGoals() {
+        try {
+          const response = await apiClient.get("/api/goals/")
+          this.goal = response.data.goals
+        } catch (error) {
+          this.handleApiError(error, "Failed to get goals")
+        }
+      },
+          // Centralized error handler for API calls
+      handleApiError(error, contextMessage = 'An API error occurred') {
+        console.error(contextMessage, error); // Log the full error for debugging
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          this.latestErrorMessage = error.response.data;
+        } else if (error.request) {
+          // The request was made but no response was received
+          this.latestErrorMessage = 'No response from server. Please check your network connection.';
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          this.latestErrorMessage = error.message || 'Error setting up the request.';
+        }
+    },
+
+    },
+    mounted() {
+      console.log('CalorieView mounted')
+      this.mealStore.getAllMeals()
+      this.getAllGoals()
+    },
   };
 </script>
