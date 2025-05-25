@@ -64,7 +64,6 @@ export const useMealStore = defineStore('meal', {
       } catch (error) {
         this.handleApiError(error, `Failed to add meal`);
       }
-      
     },
 
     // Action to update an existing dish
@@ -85,7 +84,6 @@ export const useMealStore = defineStore('meal', {
       } catch (error) {
         this.handleApiError(error, `Failed to update Meal`);
       }
-      
     },
 
     // Action to delete a dish by its ID

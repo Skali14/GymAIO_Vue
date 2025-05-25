@@ -93,6 +93,7 @@ export default {
   },
   mounted() {
     console.log('ExercisePage mounted!')
+    this.exerciseStore.callGetAllExercises()
   },
 }
 </script>

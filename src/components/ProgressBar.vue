@@ -24,9 +24,9 @@ export default {
   },
   computed: {
     progress() {
-      if (this.toReach === 0) return 0;
-      return (this.current / this.toReach) * 100;
+      if (this.toReach === 0) return 0
+      return (this.current / this.toReach) * 100
     },
   },
-};
+}
 </script>

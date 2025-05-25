@@ -14,25 +14,31 @@
                   </tr>
                 </thead>
 
-                <tbody>
-                  <tr class="hover:bg-gray-200" v-for="meal in meals" :key="meal.id">
-                    <td class="p-3 border-b border-gray-300 text-center">{{meal.name}}</td>
-                    <td class="p-3 border-b border-gray-300 text-center">{{meal.calories}}</td>
-                    <td class="p-3 border-b border-gray-300 text-center">{{meal.proteins}}</td>
-                    <td class="p-3 border-b border-gray-300 text-center">{{meal.carbohydrates}}</td>
-                    <td class="p-3 border-b border-gray-300 text-center">{{meal.fats}}</td>
-                    <td class="p-3 border-b border-gray-300 text-center">{{meal.vegetarian ? "Yes" : "No"}}</td>
-                    <td class="p-3 border-b border-gray-300 text-center">
-                      <div class="inline-flex justify-center gap-2 items-center">
-                        <a href="#edit" @click.prevent="requestEdit(meal)"><img src="/edit.svg" alt="Modify" width="16" height="16"></a>
-                        <a href="#delete" @click.prevent="handleDelete(meal.id, meal.name)"><img src="/trash.svg" alt ="Delete" width="16" height="16"></a>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
+        <tbody>
+          <tr class="hover:bg-gray-200" v-for="meal in meals" :key="meal.id">
+            <td class="p-3 border-b border-gray-300 text-center">{{ meal.name }}</td>
+            <td class="p-3 border-b border-gray-300 text-center">{{ meal.calories }}</td>
+            <td class="p-3 border-b border-gray-300 text-center">{{ meal.proteins }}</td>
+            <td class="p-3 border-b border-gray-300 text-center">{{ meal.carbohydrates }}</td>
+            <td class="p-3 border-b border-gray-300 text-center">{{ meal.fats }}</td>
+            <td class="p-3 border-b border-gray-300 text-center">
+              {{ meal.vegetarian ? 'Yes' : 'No' }}
+            </td>
+            <td class="p-3 border-b border-gray-300 text-center">
+              <div class="inline-flex justify-center gap-2 items-center">
+                <a href="#edit" @click.prevent="requestEdit(meal)"
+                  ><img src="/edit.svg" alt="Modify" width="16" height="16"
+                /></a>
+                <a href="#delete" @click.prevent="handleDelete(meal.id, meal.name)"
+                  ><img src="/trash.svg" alt="Delete" width="16" height="16"
+                /></a>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 </template>
 
 <script>

@@ -1,4 +1,9 @@
 import { defineStore } from 'pinia'
+import axios from 'axios'
+
+const apiClient = axios.create({
+  baseURL: 'http://localhost:3000'
+});
 
 export function createEmptyExercise() {
   return {
@@ -17,74 +22,7 @@ export function createEmptyExercise() {
 export const useExerciseStore = defineStore('exercise', {
   name: 'ExercisePage',
   state: () => ({
-    exercises: [
-      {
-        id: Date.now() + 1,
-        name: 'Cable Flys',
-        description: 'Using cable tower to train chest.',
-        tags: ['push', 'upper-body', 'chest'],
-        difficulty: 'intermediate',
-        image: null,
-        intensity: 7,
-        own: true,
-        favorite: false,
-      },
-      {
-        id: Date.now() + 2,
-        name: 'Leg Extensions',
-        description: 'Ancient torture method.',
-        tags: ['legs'],
-        difficulty: 'beginner',
-        image: null,
-        intensity: 8,
-        own: true,
-        favorite: false,
-      },
-      {
-        id: Date.now() + 3,
-        name: 'Benchpress',
-        description: 'Most popular exercise',
-        tags: ['push', 'upper-body', 'chest'],
-        difficulty: 'intermediate',
-        image: null,
-        intensity: 9,
-        own: false,
-        favorite: false,
-      },
-      {
-        id: Date.now() + 4,
-        name: 'Barbell Row',
-        description: 'Advanced method for training back.',
-        tags: ['pull', 'back', 'upper-body'],
-        difficulty: 'advanced',
-        image: null,
-        intensity: 8,
-        own: false,
-        favorite: false,
-      },
-      {
-        id: Date.now() + 5,
-        name: 'Reverse Butterfly',
-        description: 'Using cable tower to train back and shoulders.',
-        tags: ['pull', 'shoulder', 'upper-body'],
-        difficulty: 'beginner',
-        image: null,
-        intensity: 6,
-        own: false,
-        favorite: false,
-      },
-      {
-        id: Date.now() + 6,
-        name: 'Squats',
-        description: 'Really advanced and mechanically complex exercise.',
-        tags: ['legs'],
-        difficulty: 'advanced',
-        image: null,
-        intensity: 9,
-        own: false,
-        favorite: false,
-      },
-    ],
+    exercises: [],
   }),
   getters: {
     myExercises: (state) => {
@@ -99,47 +37,92 @@ export const useExerciseStore = defineStore('exercise', {
     },
   },
   actions: {
-    addExercise(exerciseData) {
+
+    async callGetAllExercises() {
+      try {
+        const response = await apiClient.get('/api/exercises');
+        this.exercises = response.data.exercises;
+      } catch (error) {
+        this.handleApiError(error, 'Failed to fetch exercises');
+      }
+    },
+
+    async addExercise(exerciseData) {
       if (!exerciseData.name) {
         alert('Please fill in at least the name.')
         return
       }
-
-      const newExercise = {
-        ...exerciseData,
-        id: Date.now(),
-        own: true,
+      try {
+        const newExercise = {
+          ...exerciseData,
+          own: true,
+        }
+        const response = await apiClient.post('/api/exercises', newExercise);
+        this.exercises.push(response.data.exercise)
+        console.log('Added new exercise:', response.data.exercise)
+      } catch (error) {
+        this.handleApiError(error, 'Failed to add exercise');
       }
-      this.exercises.push(newExercise)
-      console.log('Added new exercise:', newExercise)
+
     },
 
-    updateExercise(updatedExerciseData) {
+    async updateExercise(updatedExerciseData) {
       const index = this.exercises.findIndex((exercise) => exercise.id === updatedExerciseData.id)
       if (index !== -1) {
-        this.exercises.splice(index, 1, { ...updatedExerciseData })
-        console.log('Updated exercise:', updatedExerciseData.name)
+        try {
+          const response = await apiClient.put(`/api/exercises/${updatedExerciseData.id}`, updatedExerciseData);
+          this.exercises.splice(index, 1, { ...response.data.updatedExercise })
+          console.log('Updated exercise:', response.data.updatedExercise.name)
+        } catch (error) {
+          this.handleApiError(error, 'Failed to update exercise');
+        }
+
       } else {
         console.warn('ExerciseStore: Exercise not found for update - ID:', updatedExerciseData.id)
       }
     },
 
-    deleteExercise(exerciseId) {
+    async deleteExercise(exerciseId) {
       const initialLength = this.exercises.length
-      const exerciseName =
-        this.exercises.find((e) => e.id === exerciseId)?.name || 'Unknown Exercise'
-      this.exercises = this.exercises.filter((exercise) => exercise.id !== exerciseId)
-      if (this.exercises.length < initialLength) {
-        console.log('ExerciseStore: Deleted exercise - Name:', exerciseName)
-      } else {
-        console.warn('ExerciseStore: Exercise not found for deletion - ID:', exerciseId)
+      const exerciseName = this.exercises.find((e) => e.id === exerciseId)?.name || 'Unknown Exercise'
+      try {
+        await apiClient.delete(`/api/exercises/${exerciseId}`)
+        this.exercises = this.exercises.filter((exercise) => exercise.id !== exerciseId)
+        if (this.exercises.length < initialLength) {
+          console.log('ExerciseStore: Deleted exercise - Name:', exerciseName)
+        } else {
+          console.warn('ExerciseStore: Exercise not found for deletion - ID:', exerciseId)
+        }
+      } catch (error) {
+        this.handleApiError(error, 'Failed to delete exercise')
+      }
+
+    },
+
+    async favoriteExercise(exerciseId) {
+      const exercise = this.exercises.find((e) => e.id === exerciseId)
+      try {
+        await apiClient.patch(`/api/exercises/${exerciseId}?favorite=${!exercise.favorite}`)
+        exercise.favorite = !exercise.favorite
+        console.log('ExerciseStore: Set favorite of:', exercise.name, 'to', exercise.favorite)
+      } catch (error) {
+        this.handleApiError(error, 'Failed to favorite exercise')
       }
     },
 
-    favoriteExercise(exerciseId) {
-      const exercise = this.exercises.find((e) => e.id === exerciseId)
-      exercise.favorite = !exercise.favorite
-      console.log('ExerciseStore: Set favorite of:', exercise.name, 'to', exercise.favorite)
+    handleApiError(error, contextMessage = 'An API error occurred') {
+      console.error(contextMessage, error); // Log the full error for debugging
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        this.latestErrorMessage = error.response.data;
+      } else if (error.request) {
+        // The request was made but no response was received
+        this.latestErrorMessage = 'No response from server. Please check your network connection.';
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        this.latestErrorMessage = error.message || 'Error setting up the request.';
+      }
     },
   },
 })
