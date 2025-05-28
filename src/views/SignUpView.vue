@@ -4,7 +4,7 @@
       <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
         <!-- Header -->
         <div class="text-center mb-8">
-          <div class="bg-blue-100 text-blue-600 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+          <div class="bg-green-100 text-blue-600 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
             </svg>
@@ -196,6 +196,9 @@ export default {
       return texts[this.passwordStrength] || 'Very Weak'
     },
     formIsValid() {
+      if (this.signUpForm.password && this.passwordStrength < 2) {
+        this.errorMessage = "Password is too weak!"
+      }
       return this.signUpForm.firstName &&
              this.signUpForm.lastName &&
              this.signUpForm.email &&
