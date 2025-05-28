@@ -208,4 +208,17 @@ export default {
   cursor: pointer;
   border: none;
 }
+
+select[multiple] option:checked {
+  background: #3b82f6;
+  color: white;
+  border-radius: 6px;
+  margin: 2px;
+}
+
+select[multiple] option {
+  padding: 8px 12px;
+  margin: 1px;
+  border-radius: 4px;
+}
 </style>

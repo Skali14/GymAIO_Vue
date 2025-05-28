@@ -10,8 +10,8 @@ const headerTitle = computed(() => {
   switch (route.name) {
     case 'exercises':
       return 'Exercise Management'
-    case 'exercises2':
-      return 'Exercise Management'
+    case 'planner':
+      return 'Training Planner'
     case 'calorietracker':
       return 'Calorie Tracker'
     default:
@@ -41,7 +41,7 @@ onUnmounted(() => {
   <!-- Main App Container -->
   <div class="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 to-gray-100">
     <!-- Header -->
-    <header 
+    <header
       :class="[
         'transition-all duration-300 w-full z-10',
         isScrolled ? 'sticky top-0 shadow-md bg-white bg-opacity-95 backdrop-blur-sm' : 'bg-gradient-to-r from-blue-500 to-indigo-600'
@@ -57,7 +57,7 @@ onUnmounted(() => {
               alt="GymAIO Logo"
               class="w-14 h-14 md:w-16 md:h-16 rounded-full object-cover border-2 border-white shadow-md"
             />
-            <h1 
+            <h1
               :class="[
                 'ml-4 text-2xl md:text-3xl font-bold transition-colors',
                 isScrolled ? 'text-blue-600' : 'text-white'
@@ -99,7 +99,7 @@ onUnmounted(() => {
               </li>
               <li>
                 <RouterLink
-                  to="/exercises"
+                  to="/planner"
                   :class="[
                     'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
@@ -142,8 +142,8 @@ onUnmounted(() => {
                   to="/login"
                   :class="[
                     'px-3 py-1.5 rounded-md text-sm font-medium border-2 transition-all duration-200 ml-1 whitespace-nowrap',
-                    isScrolled 
-                      ? 'border-blue-500 text-blue-600 hover:bg-blue-500 hover:text-white' 
+                    isScrolled
+                      ? 'border-blue-500 text-blue-600 hover:bg-blue-500 hover:text-white'
                       : 'border-white text-white hover:bg-white hover:text-blue-600'
                   ]"
                 >Login</RouterLink>
@@ -153,7 +153,7 @@ onUnmounted(() => {
         </div>
 
         <!-- Mobile Navigation -->
-        <div 
+        <div
           :class="[
             'md:hidden transition-all duration-300 overflow-hidden',
             mobileMenuOpen ? 'max-h-96 opacity-100 mt-4' : 'max-h-0 opacity-0'
@@ -216,8 +216,8 @@ onUnmounted(() => {
                   to="/exercises"
                   :class="[
                     'block px-4 py-2 rounded-md font-medium text-center border-2 transition-all duration-200',
-                    isScrolled 
-                      ? 'border-blue-500 text-blue-600 hover:bg-blue-500 hover:text-white' 
+                    isScrolled
+                      ? 'border-blue-500 text-blue-600 hover:bg-blue-500 hover:text-white'
                       : 'border-white text-white hover:bg-white hover:text-blue-600'
                   ]"
                   @click="mobileMenuOpen = false"
