@@ -131,6 +131,9 @@
 </template>
 
 <script>
+import apiClient from '@/api/apiClient';  // import the configured axios instance
+import router from '@/router/index';
+
 export default {
   name: 'LoginView',
   data() {
@@ -157,10 +160,10 @@ export default {
         }
 
         // Simulate API call - replace with your actual authentication logic
-        await this.simulateLogin()
+        await this.login()
         
         // Handle successful login - redirect to dashboard/main app
-        this.$router.push('/calorietracker')
+        router.push({ name: 'calorietracker' });
         
       } catch (error) {
         this.errorMessage = error.message || 'Login failed. Please try again.'
@@ -169,18 +172,10 @@ export default {
       }
     },
 
-    async simulateLogin() {
-      // Simulate API delay
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          // Simulate authentication check
-          if (this.loginForm.email === 'demo@gymaio.com' && this.loginForm.password === 'demo123') {
-            resolve({ success: true })
-          } else {
-            reject(new Error('Invalid email or password'))
-          }
-        }, 1500)
-      })
+    async login() {
+      const response = await apiClient.post('/api/login', { email: this.loginForm.email, password: this.loginForm.password });
+      const token = response.data.token;
+      localStorage.setItem('token', token); // store token after login
     },
 
     togglePasswordVisibility() {

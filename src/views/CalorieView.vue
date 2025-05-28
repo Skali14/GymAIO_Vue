@@ -137,11 +137,7 @@
   import { mapStores } from 'pinia';
   import { useMealStore, createEmptyMeal } from '@/stores/mealStore.js';
   import ProgressBar from '@/components/ProgressBar.vue';
-  import axios from 'axios'
-
-  const apiClient = axios.create({
-  baseURL: 'http://localhost:3000', // Adjust if your backend runs elsewhere  
-  });
+  import apiClient from '@/api/apiClient';  // import the configured axios instance
 
   export default {
     name: 'CalorieView',

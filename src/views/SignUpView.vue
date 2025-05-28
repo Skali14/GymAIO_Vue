@@ -162,6 +162,8 @@
 </template>
 
 <script>
+import apiClient from '@/api/apiClient';  // import the configured axios instance
+
 export default {
   name: 'SignUpView',
   data() {
@@ -198,6 +200,8 @@ export default {
     formIsValid() {
       if (this.signUpForm.password && this.passwordStrength < 2) {
         this.errorMessage = "Password is too weak!"
+      } else {
+        this.errorMessage = ''
       }
       return this.signUpForm.firstName &&
              this.signUpForm.lastName &&
@@ -233,13 +237,18 @@ export default {
     },
 
     async createAccount() {
-      // Replace with your actual API call
-      return new Promise((resolve, reject) => {
-        setTimeout(() => {
-          // Simulate account creation
-          resolve({ success: true })
-        }, 2000)
-      })
+      const payload = {
+        firstname: this.signUpForm.firstName,
+        lastname: this.signUpForm.lastName,
+        email: this.signUpForm.email,
+        password: this.signUpForm.password,
+      };
+      try {
+        const response = await apiClient.post("/api/register", payload)
+        console.log(response)
+      } catch (error) {
+        console.log(error)
+      }
     },
 
     togglePasswordVisibility() {

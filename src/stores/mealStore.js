@@ -1,10 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
-
-const apiClient = axios.create({
-  baseURL: 'http://localhost:3000', // Adjust if your backend runs elsewhere
-});
-
+import apiClient from '@/api/apiClient';  // import the configured axios instance
 
   // Initial meal data structure helper
 export function createEmptyMeal() {
