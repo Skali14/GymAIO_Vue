@@ -109,9 +109,10 @@
         <div class="mt-8 text-center">
           <p class="text-sm text-gray-600">
             Don't have an account?
-            <a href="#" class="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+
+            <RouterLink to="/signup" class="text-blue-600 hover:text-blue-800 font-medium transition-colors">
               Sign up here
-            </a>
+            </RouterLink>
           </p>
         </div>
       </div>
