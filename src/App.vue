@@ -1,6 +1,6 @@
 <script setup>
 import { RouterLink, RouterView, useRoute } from 'vue-router'
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
 
 const route = useRoute()
 const mobileMenuOpen = ref(false)
@@ -26,6 +26,14 @@ function toggleMobileMenu() {
 function checkScroll() {
   isScrolled.value = window.scrollY > 20
 }
+
+// Watch for route changes and scroll to top smoothly
+watch(() => route.path, () => {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
+})
 
 onMounted(() => {
   window.addEventListener('scroll', checkScroll)
