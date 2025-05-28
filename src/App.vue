@@ -139,7 +139,7 @@ onUnmounted(() => {
               </li>
               <li>
                 <RouterLink
-                  to="/exercises"
+                  to="/login"
                   :class="[
                     'px-3 py-1.5 rounded-md text-sm font-medium border-2 transition-all duration-200 ml-1 whitespace-nowrap',
                     isScrolled 
