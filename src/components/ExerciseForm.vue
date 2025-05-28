@@ -1,21 +1,20 @@
 <template>
   <section
     id="exercise-form"
-    class="bg-custom-formbg rounded-xl shadow-section overflow-hidden mb-4 lg:mb-0"
+    class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mb-4 lg:mb-0"
   >
-    <h2
-      class="bg-gradient-to-br from-[#888] to-custom-formheader text-white m-0 py-3 px-4 md:py-4 md:px-5 text-2xl md:text-3xl tracking-wider font-semibold"
-    >
-      {{ isEditing ? 'Update an exercise' : 'Create a new exercise' }}
+    <h2 class="text-xl font-bold mb-6 text-gray-800 flex items-center">
+      <span class="bg-blue-100 text-blue-600 p-2 rounded-full mr-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+      </span>
+      {{ isEditing ? 'Update Exercise' : 'Add Exercise' }}
     </h2>
-    <form
-      class="bg-white p-4 md:p-6 m-0 w-full box-border rounded-none shadow-none"
-      @submit.prevent="handleSubmit"
-    >
-      <div class="mb-5">
-        <label for="exercise-name" class="block font-bold mb-2 text-[#555] text-sm"
-          ><strong>Name:</strong></label
-        >
+
+    <form @submit.prevent="handleSubmit">
+      <div class="mb-4">
+        <label for="exercise-name" class="block font-bold mb-2 text-gray-700">Name:</label>
         <input
           type="text"
           id="exercise-name"
@@ -24,148 +23,65 @@
           @input="updateField('name', $event.target.value)"
           required
           placeholder="e.g. Benchpress"
-          class="w-full py-2.5 px-3 border border-custom-inputborder rounded-md box-border text-sm transition-all duration-300 focus:border-[#888] focus:shadow-md focus:outline-none"
+          class="w-full p-3 border border-gray-500 rounded-md text-base focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition-all duration-300"
         />
       </div>
 
-      <div class="mb-5">
-        <label for="exercise-description" class="block font-bold mb-2 text-[#555] text-sm"
-          ><strong>Description:</strong></label
-        >
+      <div class="mb-4">
+        <label for="exercise-description" class="block font-bold mb-2 text-gray-700">Description:</label>
         <textarea
           id="exercise-description"
           name="exercise-description"
           :value="modelValue.description"
           @input="updateField('description', $event.target.value)"
-          rows="5"
-          cols="40"
+          rows="4"
           placeholder="Enter exercise description here..."
-          class="w-full py-2.5 px-3 border border-custom-inputborder rounded-md box-border text-sm transition-all duration-300 focus:border-[#888] focus:shadow-md focus:outline-none resize-none"
+          class="w-full p-3 border border-gray-500 rounded-md text-base focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition-all duration-300 resize-none"
         ></textarea>
       </div>
 
-      <div class="mb-5">
-        <label for="exercise-tags" class="block font-bold mb-2 text-[#555] text-sm"
-          ><strong>Tags:</strong>
-          <span class="font-normal text-xs text-[#777] italic invisible lg:visible">
-            (hold Ctrl/Cmd to select multiple)</span
-          ></label
-        >
+      <div class="mb-4">
+        <label for="exercise-tags" class="block font-bold mb-2 text-gray-700">
+          Tags:
+          <span class="font-normal text-sm text-gray-500 ml-2">(hold Ctrl/Cmd to select multiple)</span>
+        </label>
         <select
           id="exercise-tags"
           name="exercise-tags"
-          @change="
-            updateField(
-              'tags',
-              Array.from($event.target.selectedOptions).map((opt) => opt.value),
-            )
-          "
+          @change="updateField('tags', Array.from($event.target.selectedOptions).map((opt) => opt.value))"
           multiple
-          class="w-full h-auto min-h-[120px] p-2.5 bg-custom-inputbg border border-custom-inputborder rounded-md box-border text-sm transition-all duration-300 focus:border-[#888] focus:shadow-md focus:outline-none"
+          class="w-full min-h-[120px] p-3 border border-gray-500 rounded-md text-base focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition-all duration-300"
         >
-          <option
-            value="pull"
-            :selected="modelValue.tags.includes('pull')"
-            class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover"
-          >
-            Pull
-          </option>
-          <option
-            value="push"
-            :selected="modelValue.tags.includes('push')"
-            class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover"
-          >
-            Push
-          </option>
-          <option
-            value="upper-body"
-            :selected="modelValue.tags.includes('upper-body')"
-            class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover"
-          >
-            Upper Body
-          </option>
-          <option
-            value="chest"
-            :selected="modelValue.tags.includes('chest')"
-            class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover"
-          >
-            Chest
-          </option>
-          <option
-            value="back"
-            :selected="modelValue.tags.includes('back')"
-            class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover"
-          >
-            Back
-          </option>
-          <option
-            value="shoulder"
-            :selected="modelValue.tags.includes('shoulder')"
-            class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover"
-          >
-            Shoulder
-          </option>
-          <option
-            value="legs"
-            :selected="modelValue.tags.includes('legs')"
-            class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover"
-          >
-            Legs
-          </option>
-          <option
-            value="arms"
-            :selected="modelValue.tags.includes('arms')"
-            class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover"
-          >
-            Arms
-          </option>
-          <option
-            value="core"
-            :selected="modelValue.tags.includes('core')"
-            class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover"
-          >
-            Core
-          </option>
-          <option
-            value="cardio"
-            :selected="modelValue.tags.includes('cardio')"
-            class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover"
-          >
-            Cardio
-          </option>
+          <option value="pull" :selected="modelValue.tags.includes('pull')" class="py-2">Pull</option>
+          <option value="push" :selected="modelValue.tags.includes('push')" class="py-2">Push</option>
+          <option value="upper-body" :selected="modelValue.tags.includes('upper-body')" class="py-2">Upper Body</option>
+          <option value="chest" :selected="modelValue.tags.includes('chest')" class="py-2">Chest</option>
+          <option value="back" :selected="modelValue.tags.includes('back')" class="py-2">Back</option>
+          <option value="shoulder" :selected="modelValue.tags.includes('shoulder')" class="py-2">Shoulder</option>
+          <option value="legs" :selected="modelValue.tags.includes('legs')" class="py-2">Legs</option>
+          <option value="arms" :selected="modelValue.tags.includes('arms')" class="py-2">Arms</option>
+          <option value="core" :selected="modelValue.tags.includes('core')" class="py-2">Core</option>
+          <option value="cardio" :selected="modelValue.tags.includes('cardio')" class="py-2">Cardio</option>
         </select>
       </div>
 
-      <div class="mb-5">
-        <label for="exercise-difficulty" class="block font-bold mb-2 text-[#555] text-sm"
-          ><strong>Difficulty Level:</strong></label
-        >
+      <div class="mb-4">
+        <label for="exercise-difficulty" class="block font-bold mb-2 text-gray-700">Difficulty Level:</label>
         <select
           id="exercise-difficulty"
           name="exercise-difficulty"
           :value="modelValue.difficulty"
           @change="updateField('difficulty', $event.target.value)"
-          class="w-full h-auto py-2.5 px-3 bg-custom-inputbg border border-custom-inputborder rounded-md box-border text-sm transition-all duration-300 focus:border-[#888] focus:shadow-md focus:outline-none"
+          class="w-full p-3 border border-gray-500 rounded-md text-base focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition-all duration-300"
         >
-          <option value="beginner" class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover">
-            Beginner
-          </option>
-          <option
-            value="intermediate"
-            class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover"
-          >
-            Intermediate
-          </option>
-          <option value="advanced" class="py-2 px-2.5 mb-0.5 rounded hover:bg-custom-optionhover">
-            Advanced
-          </option>
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
         </select>
       </div>
 
-      <div class="mb-5">
-        <label for="exercise-form-explanation" class="block font-bold mb-2 text-[#555] text-sm"
-          ><strong>Upload Exercise Image:</strong></label
-        >
+      <div class="mb-4">
+        <label for="exercise-form-explanation" class="block font-bold mb-2 text-gray-700">Upload Exercise Image:</label>
         <input
           type="file"
           id="exercise-form-explanation"
@@ -173,14 +89,14 @@
           name="exercise-form-explanation"
           accept="image/*"
           @change="updateField('image', $event.target.files[0])"
-          class="w-full py-2.5 px-3 border border-custom-inputborder rounded-md box-border text-sm transition-all duration-300 focus:border-[#888] focus:shadow-md focus:outline-none"
+          class="w-full p-3 border border-gray-500 rounded-md text-base focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition-all duration-300"
         />
       </div>
 
-      <div class="mb-5">
-        <label for="exercise-intensity" class="block font-bold mb-2 text-[#555] text-sm"
-          ><strong>Intensity:</strong></label
-        >
+      <div class="mb-6">
+        <label for="exercise-intensity" class="block font-bold mb-2 text-gray-700">
+          Intensity: {{ modelValue.intensity }}
+        </label>
         <input
           type="range"
           min="1"
@@ -189,8 +105,12 @@
           :value="modelValue.intensity"
           @change="updateField('intensity', $event.target.value)"
           name="exercise-intensity"
-          class="w-full h-1.5 bg-[#ddd] appearance-none rounded-full cursor-pointer"
+          class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
         />
+        <div class="flex justify-between text-sm text-gray-500 mt-1">
+          <span>1</span>
+          <span>10</span>
+        </div>
       </div>
 
       <div :class="isEditing ? 'flex gap-4' : ''">
@@ -198,17 +118,14 @@
           type="button"
           v-if="isEditing"
           @click="handleCancel"
-          class="w-1/2 py-3 px-3 bg-gradient-to-br from-[#888] to-custom-buttonbg text-white font-bold tracking-wider uppercase text-sm rounded-md border-0 cursor-pointer transition-all duration-300 hover:from-[#777] hover:to-custom-buttonhover hover:-translate-y-0.5 hover:shadow-btn active:translate-y-0"
+          class="w-full p-3 bg-gray-500 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-gray-600 hover:scale-105"
         >
           Cancel Edit
         </button>
 
         <button
           type="submit"
-          :class="[
-            'py-3 px-3 bg-gradient-to-br from-[#888] to-custom-buttonbg text-white font-bold tracking-wider uppercase text-sm rounded-md border-0 cursor-pointer transition-all duration-300 hover:from-[#777] hover:to-custom-buttonhover hover:-translate-y-0.5 hover:shadow-btn active:translate-y-0',
-            isEditing ? 'w-1/2' : 'w-full',
-          ]"
+          class="w-full p-3 bg-gray-500 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-blue-800 hover:scale-105 hover:border-2 hover:border-gray-200"
         >
           {{ isEditing ? 'Update Exercise' : 'Add Exercise' }}
         </button>
@@ -272,3 +189,23 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+  border: none;
+}
+</style>
