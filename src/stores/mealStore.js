@@ -98,7 +98,24 @@ export const useMealStore = defineStore('meal', {
       if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        this.latestErrorMessage = error.response.data;
+        switch (error.response.status) {
+          case 400:
+            this.latestErrorMessage = '400 Bad Request: ' + error.response.data.message;
+            break;
+          case 401:
+            this.latestErrorMessage = '401 Unauthorized: ' + error.response.data.message;
+            break;
+          case 403:
+            this.latestErrorMessage = '403 Forbidden: ' + error.response.data.message;
+            break;
+          case 404:
+            this.latestErrorMessage = '404 Not Found: ' + error.response.data.message;
+            break;
+          default:
+            this.latestErrorMessage = 'An error occurred: ' + error.response.data.message;
+            break;
+        }
+        alert(this.latestErrorMessage);
       } else if (error.request) {
         // The request was made but no response was received
         this.latestErrorMessage = 'No response from server. Please check your network connection.';

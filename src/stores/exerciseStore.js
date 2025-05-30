@@ -1,9 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
-
-const apiClient = axios.create({
-  baseURL: 'http://localhost:3000'
-});
+import apiClient from '@/api/apiClient';  // import the configured axios instance
 
 export function createEmptyExercise() {
   return {
@@ -115,7 +111,24 @@ export const useExerciseStore = defineStore('exercise', {
       if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx
-        this.latestErrorMessage = error.response.data;
+        switch (error.response.status) {
+          case 400:
+            this.latestErrorMessage = 'Bad Request: ' + error.response.data.message;
+            break;
+          case 401:
+            this.latestErrorMessage = 'Unauthorized: ' + error.response.data.message;
+            break;
+          case 403:
+            this.latestErrorMessage = 'Forbidden: ' + error.response.data.message;
+            break;
+          case 404:
+            this.latestErrorMessage = 'Not Found: ' + error.response.data.message;
+            break;
+          default:
+            this.latestErrorMessage = 'An error occurred: ' + error.response.data.message;
+            break;
+        }
+        alert(this.latestErrorMessage);
       } else if (error.request) {
         // The request was made but no response was received
         this.latestErrorMessage = 'No response from server. Please check your network connection.';

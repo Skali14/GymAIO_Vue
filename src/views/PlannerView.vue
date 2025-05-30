@@ -1,9 +1,7 @@
 <template>
   <main class="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 text-gray-800 font-sans p-4 md:p-6 lg:p-8">
     <div class="max-w-7xl mx-auto">
-      <!-- Main Content Container -->
       <div class="flex flex-col lg:flex-row gap-8">
-        <!-- Left: Planner Form Section -->
         <div class="flex-1 lg:max-w-md">
           <section
             id="planner-form"
@@ -385,7 +383,7 @@ export default {
 
       // Here you would typically save to a store or send to an API
       console.log('Saving workout plan:', this.currentPlan)
-      alert(`Workout plan "${this.currentPlan.name}" saved successfully!`)
+      
       this.resetForm()
     },
 
