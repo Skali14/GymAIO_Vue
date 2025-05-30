@@ -269,6 +269,108 @@
               </div>
             </div>
           </section>
+
+          <!-- Current Plans Section -->
+          <section class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 mt-8">
+            <h2 class="text-xl font-bold mb-6 text-gray-800 flex items-center">
+              <span class="bg-purple-100 text-purple-600 p-2 rounded-full mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.47.94-6.071 2.459M16 8a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </span>
+              Current Workout Plans
+            </h2>
+
+            <div class="overflow-x-auto">
+              <table
+                v-if="planStore.plans.length > 0"
+                class="w-full border-collapse bg-white rounded-lg overflow-hidden shadow-sm border border-gray-100"
+              >
+                <thead>
+                <tr>
+                  <th class="p-3 bg-gray-500 text-white border-b border-gray-300 text-left font-semibold">Name</th>
+                  <th class="p-3 bg-gray-500 text-white border-b border-gray-300 text-left font-semibold">Muscle Groups</th>
+                  <th class="p-3 bg-gray-500 text-white border-b border-gray-300 text-left font-semibold">Avg Intensity</th>
+                  <th class="p-3 bg-gray-500 text-white border-b border-gray-300 text-left font-semibold">Manage</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr
+                  v-for="plan in planStore.plans"
+                  :key="plan.id"
+                  class="border-b border-gray-200 hover:bg-purple-50 transition-colors duration-200"
+                >
+                  <td class="p-3 text-left">
+                    <div class="flex items-center">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                      <div>
+                        {{ plan.name }}
+                        <div v-if="plan.description" class="text-xs text-gray-500 mt-1">{{ plan.description }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="p-3 text-left">
+                    <div class="flex flex-wrap gap-1">
+                      <span
+                        v-for="tag in getPlanMuscleGroups(plan).slice(0, 3)"
+                        :key="tag"
+                        class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 text-blue-800"
+                      >
+                        {{ formatTag(tag) }}
+                      </span>
+                      <span v-if="getPlanMuscleGroups(plan).length > 3" class="text-xs text-gray-500">
+                        +{{ getPlanMuscleGroups(plan).length - 3 }} more
+                      </span>
+                    </div>
+                  </td>
+                  <td class="p-3 text-left">
+                    <div class="flex items-center">
+                      <span class="mr-2">{{ getPlanAvgIntensity(plan) }}</span>
+                      <div class="flex-1 bg-gray-200 rounded-full h-2 max-w-20">
+                        <div
+                          class="bg-blue-500 h-2 rounded-full transition-all duration-300"
+                          :style="{ width: `${(getPlanAvgIntensity(plan) / 10) * 100}%` }"
+                        ></div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="p-3 text-left">
+                    <div class="inline-flex justify-center gap-2 items-center">
+                      <button
+                        @click="editPlan(plan)"
+                        title="Edit plan"
+                        class="p-1 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-full transition-colors duration-200"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                      <button
+                        @click="deletePlan(plan.id)"
+                        title="Delete plan"
+                        class="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-full transition-colors duration-200"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+
+              <div v-if="planStore.plans.length === 0" class="text-center py-8 text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                <p>No workout plans created yet.</p>
+                <p class="text-sm mt-1">Create your first plan using the form above!</p>
+              </div>
+            </div>
+          </section>
         </div>
       </div>
     </div>
@@ -278,12 +380,14 @@
 <script>
 import { mapStores } from 'pinia'
 import { useExerciseStore } from '@/stores/exerciseStore.js'
+import { usePlanStore } from '@/stores/planStore.js'
 
 export default {
   name: 'PlannerView',
   data() {
     return {
       currentPlan: {
+        id: null,
         name: '',
         description: '',
         exercises: []
@@ -297,6 +401,7 @@ export default {
   },
   computed: {
     ...mapStores(useExerciseStore),
+    ...mapStores(usePlanStore),
 
     allExercises() {
       // Combine myExercises and sharedExercises, prioritize favorites
@@ -375,23 +480,49 @@ export default {
       this.currentPlan.exercises.splice(index, 1)
     },
 
-    handleSubmit() {
+    async handleSubmit() {
       if (!this.currentPlan.name || this.currentPlan.exercises.length === 0) {
         alert('Please provide a plan name and add at least one exercise.')
         return
       }
 
-      // Here you would typically save to a store or send to an API
-      console.log('Saving workout plan:', this.currentPlan)
-      
-      this.resetForm()
+      try {
+        if (this.currentPlan.id) {
+          // Update existing plan
+          await this.planStore.updatePlan(this.currentPlan)
+        } else {
+          // Create new plan
+          await this.planStore.addPlan(this.currentPlan)
+        }
+        this.resetForm()
+      } catch (error) {
+        this.error = error.message || 'Failed to save workout plan'
+        alert(this.error)
+      }
     },
 
     resetForm() {
       this.currentPlan = {
+        id: null,
         name: '',
         description: '',
         exercises: []
+      }
+      this.error = null
+    },
+
+    editPlan(plan) {
+      this.currentPlan = { ...plan }
+    },
+
+    async deletePlan(planId) {
+      if (confirm('Are you sure you want to delete this workout plan?')) {
+        try {
+          await this.planStore.deletePlan(planId)
+        } catch (error) {
+          this.error = error.message || 'Failed to delete workout plan'
+          alert(this.error)
+        }
       }
     },
 
@@ -401,11 +532,23 @@ export default {
         .split(' ')
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(' ')
+    },
+
+    getPlanMuscleGroups(plan) {
+      const allTags = plan.exercises.flatMap(ex => ex.tags)
+      return [...new Set(allTags)]
+    },
+
+    getPlanAvgIntensity(plan) {
+      if (plan.exercises.length === 0) return 0
+      const total = plan.exercises.reduce((sum, ex) => sum + parseInt(ex.intensity), 0)
+      return Math.round(total / plan.exercises.length * 10) / 10
     }
   },
   mounted() {
     console.log('PlannerView mounted!')
     this.exerciseStore.callGetAllExercises()
+    this.planStore.callGetAllPlans()
   }
 }
 </script>

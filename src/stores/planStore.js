@@ -11,7 +11,7 @@ export function createEmptyPlan() {
   }
 }
 
-export const useExerciseStore = defineStore('plan', {
+export const usePlanStore = defineStore('plan', {
   name: 'PlanPage',
   state: () => ({
     plans: [],
@@ -50,7 +50,7 @@ export const useExerciseStore = defineStore('plan', {
       if (index !== -1) {
         try {
           const response = await apiClient.put(`/api/plans/${updatedPlanData.id}`, updatedPlanData);
-          this.exercises.splice(index, 1, { ...response.data.updatedPlan })
+          this.plans.splice(index, 1, { ...response.data.updatedPlan })
           console.log('Updated plan:', response.data.updatedPlan.name)
         } catch (error) {
           this.handleApiError(error, 'Failed to update plan');

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import apiClient from '@/api/apiClient';  // import the configured axios instance
+import { usePlanStore } from './planStore'  // import the plan store
 
 export function createEmptyExercise() {
   return {
@@ -84,6 +85,29 @@ export const useExerciseStore = defineStore('exercise', {
       try {
         await apiClient.delete(`/api/exercises/${exerciseId}`)
         this.exercises = this.exercises.filter((exercise) => exercise.id !== exerciseId)
+        
+        // Get the plan store instance
+        const planStore = usePlanStore()
+        
+        // Update all plans to remove the deleted exercise
+        for (const plan of planStore.plans) {
+          const updatedExercises = plan.exercises.filter(ex => ex.id !== exerciseId)
+          if (updatedExercises.length !== plan.exercises.length) {
+            // Only update if the exercise was actually in the plan
+            if(updatedExercises.length === 0) {
+              // If the exercise is not in any plan, delete the plan
+              await planStore.deletePlan(plan.id)
+            } else {
+            const updatedPlan = {
+              ...plan,
+              exercises: updatedExercises
+            }
+            
+            await planStore.updatePlan(updatedPlan)
+            }
+          }
+        }
+        
         if (this.exercises.length < initialLength) {
           console.log('ExerciseStore: Deleted exercise - Name:', exerciseName)
         } else {
@@ -92,7 +116,6 @@ export const useExerciseStore = defineStore('exercise', {
       } catch (error) {
         this.handleApiError(error, 'Failed to delete exercise')
       }
-
     },
 
     async favoriteExercise(exerciseId) {

@@ -181,7 +181,7 @@ onUnmounted(() => {
               </li>
               <li>
                 <RouterLink
-                  to="/exercises"
+                  to="/planner"
                   :class="[
                     'block px-4 py-3 font-medium transition-colors',
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-600'
@@ -221,7 +221,7 @@ onUnmounted(() => {
               </li>
               <li class="p-4">
                 <RouterLink
-                  to="/exercises"
+                  to="/login"
                   :class="[
                     'block px-4 py-2 rounded-md font-medium text-center border-2 transition-all duration-200',
                     isScrolled
