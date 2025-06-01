@@ -1,5 +1,5 @@
 <script setup>
-import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { RouterLink, RouterView, useRoute, useRouter  } from 'vue-router'
 import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
 import { useAuthStore } from '@/stores/authStore' // Import the auth store
 
@@ -7,6 +7,7 @@ const route = useRoute()
 const authStore = useAuthStore() // Initialize auth store
 const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
+const router = useRouter()
 
 const headerTitle = computed(() => {
   switch (route.name) {
