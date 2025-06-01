@@ -256,14 +256,6 @@ onUnmounted(() => {
               </li>
               <!-- User info and auth buttons - Mobile -->
               <li v-if="isAuthenticated" class="p-4">
-                <div 
-                  :class="[
-                    'text-sm font-medium mb-3',
-                    isScrolled ? 'text-gray-600' : 'text-white opacity-90'
-                  ]"
-                >
-                  Welcome, {{ authStore.currentUser?.name || authStore.currentUser?.email }}
-                </div>
                 <button
                   @click="handleLogout(); mobileMenuOpen = false"
                   :class="[

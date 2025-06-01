@@ -30,7 +30,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'login1',
-      component: ExerciseView,
+      component: LoginView,
     },
     {
       path: '/login',
