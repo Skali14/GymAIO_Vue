@@ -100,7 +100,6 @@ export const usePlanStore = defineStore('plan', {
             this.latestErrorMessage = 'An error occurred: ' + error.response.data.message;
             break;
         }
-        alert(this.latestErrorMessage);
       } else if (error.request) {
         // The request was made but no response was received
         this.latestErrorMessage = 'No response from server. Please check your network connection.';
