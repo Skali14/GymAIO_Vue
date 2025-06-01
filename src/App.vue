@@ -1,8 +1,10 @@
 <script setup>
 import { RouterLink, RouterView, useRoute } from 'vue-router'
 import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
+import { useAuthStore } from '@/stores/authStore' // Import the auth store
 
 const route = useRoute()
+const authStore = useAuthStore() // Initialize auth store
 const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
 
@@ -19,12 +21,28 @@ const headerTitle = computed(() => {
   }
 })
 
+// Check if user is admin
+const isAdmin = computed(() => {
+  return authStore.isAdmin
+})
+
+// Check if user is authenticated
+const isAuthenticated = computed(() => {
+  return authStore.isLoggedIn
+})
+
 function toggleMobileMenu() {
   mobileMenuOpen.value = !mobileMenuOpen.value
 }
 
 function checkScroll() {
   isScrolled.value = window.scrollY > 20
+}
+
+function handleLogout() {
+  authStore.logout()
+  // Optionally redirect to home or login page
+  router.push('/login')
 }
 
 // Watch for route changes and scroll to top smoothly
@@ -135,9 +153,10 @@ onUnmounted(() => {
                   active-class="bg-blue-700 text-white"
                 >Calorie Tracker</RouterLink>
               </li>
-              <li>
+              <!-- Admin Dashboard - Only show if user is admin -->
+              <li v-if="isAdmin">
                 <RouterLink
-                  to="/exercises"
+                  to="/admin"
                   :class="[
                     'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
@@ -145,7 +164,8 @@ onUnmounted(() => {
                   active-class="bg-blue-700 text-white"
                 >Admin Dashboard</RouterLink>
               </li>
-              <li>
+              <!-- Authentication buttons -->
+              <li v-if="!isAuthenticated">
                 <RouterLink
                   to="/login"
                   :class="[
@@ -155,6 +175,19 @@ onUnmounted(() => {
                       : 'border-white text-white hover:bg-white hover:text-blue-600'
                   ]"
                 >Login</RouterLink>
+              </li>
+              <li v-if="isAuthenticated" class="flex items-center space-x-2">
+                <button
+                  @click="handleLogout"
+                  :class="[
+                    'px-3 py-1.5 rounded-md text-sm font-medium border-2 transition-all duration-200 whitespace-nowrap',
+                    isScrolled
+                      ? 'border-red-500 text-red-600 hover:bg-red-500 hover:text-white'
+                      : 'border-white text-white hover:bg-white hover:text-red-600'
+                  ]"
+                >
+                  Sign Out
+                </button>
               </li>
             </ul>
           </nav>
@@ -209,9 +242,10 @@ onUnmounted(() => {
                   @click="mobileMenuOpen = false"
                 >Calorie Tracker</RouterLink>
               </li>
-              <li>
+              <!-- Admin Dashboard - Mobile - Only show if user is admin -->
+              <li v-if="isAdmin">
                 <RouterLink
-                  to="/exercises"
+                  to="/admin"
                   :class="[
                     'block px-4 py-3 font-medium transition-colors',
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-600'
@@ -219,7 +253,29 @@ onUnmounted(() => {
                   @click="mobileMenuOpen = false"
                 >Admin Dashboard</RouterLink>
               </li>
-              <li class="p-4">
+              <!-- User info and auth buttons - Mobile -->
+              <li v-if="isAuthenticated" class="p-4">
+                <div 
+                  :class="[
+                    'text-sm font-medium mb-3',
+                    isScrolled ? 'text-gray-600' : 'text-white opacity-90'
+                  ]"
+                >
+                  Welcome, {{ authStore.currentUser?.name || authStore.currentUser?.email }}
+                </div>
+                <button
+                  @click="handleLogout(); mobileMenuOpen = false"
+                  :class="[
+                    'block w-full px-4 py-2 rounded-md font-medium text-center border-2 transition-all duration-200',
+                    isScrolled
+                      ? 'border-red-500 text-red-600 hover:bg-red-500 hover:text-white'
+                      : 'border-white text-white hover:bg-white hover:text-red-600'
+                  ]"
+                >
+                  Sign Out
+                </button>
+              </li>
+              <li v-if="!isAuthenticated" class="p-4">
                 <RouterLink
                   to="/login"
                   :class="[

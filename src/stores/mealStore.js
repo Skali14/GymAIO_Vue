@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import { useAuthStore } from './authStore';
 import apiClient from '@/api/apiClient';  // import the configured axios instance
 
   // Initial meal data structure helper

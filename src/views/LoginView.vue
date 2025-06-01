@@ -132,7 +132,9 @@
 
 <script>
 import apiClient from '@/api/apiClient';  // import the configured axios instance
+import { mapStores } from 'pinia'
 import router from '@/router/index';
+import { useAuthStore } from '@/stores/authStore';
 
 export default {
   name: 'LoginView',
@@ -148,6 +150,9 @@ export default {
       errorMessage: ''
     }
   },
+  computed: {
+    ...mapStores(useAuthStore),
+  },
   methods: {
     async handleLogin() {
       this.errorMessage = ''
@@ -159,8 +164,7 @@ export default {
           throw new Error('Please fill in all required fields')
         }
 
-        // Simulate API call - replace with your actual authentication logic
-        await this.login()
+        await this.authStore.login(this.loginForm.email, this.loginForm.password)
         
         // Handle successful login - redirect to dashboard/main app
         router.push({ name: 'calorietracker' });
@@ -172,11 +176,6 @@ export default {
       }
     },
 
-    async login() {
-      const response = await apiClient.post('/api/login', { email: this.loginForm.email, password: this.loginForm.password });
-      const token = response.data.token;
-      localStorage.setItem('token', token); // store token after login
-    },
 
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword

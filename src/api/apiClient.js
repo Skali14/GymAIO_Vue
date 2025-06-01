@@ -6,6 +6,8 @@ const apiClient = axios.create({
 
 // Add interceptor once here, outside stores
 apiClient.interceptors.request.use(config => {
+  console.log(localStorage.getItem('token')); // should print a valid JWT
+
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
