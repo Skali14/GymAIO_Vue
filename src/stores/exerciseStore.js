@@ -85,10 +85,10 @@ export const useExerciseStore = defineStore('exercise', {
       try {
         await apiClient.delete(`/api/exercises/${exerciseId}`)
         this.exercises = this.exercises.filter((exercise) => exercise.id !== exerciseId)
-        
+
         // Get the plan store instance
         const planStore = usePlanStore()
-        
+
         // Update all plans to remove the deleted exercise
         for (const plan of planStore.plans) {
           const updatedExercises = plan.exercises.filter(ex => ex.id !== exerciseId)
@@ -102,12 +102,12 @@ export const useExerciseStore = defineStore('exercise', {
               ...plan,
               exercises: updatedExercises
             }
-            
+
             await planStore.updatePlan(updatedPlan)
             }
           }
         }
-        
+
         if (this.exercises.length < initialLength) {
           console.log('ExerciseStore: Deleted exercise - Name:', exerciseName)
         } else {
@@ -151,7 +151,6 @@ export const useExerciseStore = defineStore('exercise', {
             this.latestErrorMessage = 'An error occurred: ' + error.response.data.message;
             break;
         }
-        alert(this.latestErrorMessage);
       } else if (error.request) {
         // The request was made but no response was received
         this.latestErrorMessage = 'No response from server. Please check your network connection.';

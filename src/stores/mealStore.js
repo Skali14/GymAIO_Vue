@@ -116,7 +116,6 @@ export const useMealStore = defineStore('meal', {
             this.latestErrorMessage = 'An error occurred: ' + error.response.data.message;
             break;
         }
-        alert(this.latestErrorMessage);
       } else if (error.request) {
         // The request was made but no response was received
         this.latestErrorMessage = 'No response from server. Please check your network connection.';
