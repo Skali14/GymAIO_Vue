@@ -5,6 +5,7 @@ import LoginView from '@/views/LoginView.vue'
 import SignUpView from '@/views/SignUpView.vue'
 import PlannerView from '@/views/PlannerView.vue'
 import { useAuthStore } from '@/stores/authStore';
+import TrackerView from '@/views/TrackerView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +26,12 @@ const router = createRouter({
       path: '/planner',
       name: 'planner',
       component: PlannerView,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/tracker',
+      name: 'tracker',
+      component: TrackerView,
       meta: { requiresAuth: true }
     },
     {

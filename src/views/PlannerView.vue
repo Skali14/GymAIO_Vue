@@ -96,16 +96,28 @@
                             </div>
                           </div>
                         </div>
-                        <button
-                          type="button"
-                          @click="removeExercise(index)"
-                          class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors duration-200"
-                          title="Remove exercise"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
+                        <div class="flex items-center gap-3">
+                          <div class="flex items-center">
+                            <label class="text-xs text-gray-600 mr-2">Sets:</label>
+                            <input
+                              type="number"
+                              v-model.number="exercise.sets"
+                              min="1"
+                              max="20"
+                              class="w-16 px-2 py-1 text-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            @click="removeExercise(index)"
+                            class="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors duration-200"
+                            title="Remove exercise"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -307,7 +319,6 @@
                       </svg>
                       <div>
                         {{ plan.name }}
-                        <div v-if="plan.description" class="text-xs text-gray-500 mt-1">{{ plan.description }}</div>
                       </div>
                     </div>
                   </td>
@@ -367,7 +378,10 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
                 <p>No workout plans created yet.</p>
-                <p class="text-sm mt-1">Create your first plan using the form above!</p>
+                <p class="text-sm mt-1">
+                  <span class="hidden lg:inline">Create your first plan using the form on the left!</span>
+                  <span class="lg:hidden">Create your first plan using the form above!</span>
+                </p>
               </div>
             </div>
           </section>
@@ -455,7 +469,11 @@ export default {
         // Check if exercise is already in the plan
         const existingIndex = this.currentPlan.exercises.findIndex(ex => ex.id === this.draggedExercise.id)
         if (existingIndex === -1) {
-          this.currentPlan.exercises.push({ ...this.draggedExercise })
+          // Add default sets value when adding a new exercise
+          this.currentPlan.exercises.push({ 
+            ...this.draggedExercise,
+            sets: 3 // Default number of sets
+          })
         }
         this.draggedExercise = null
       }

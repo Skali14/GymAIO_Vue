@@ -14,9 +14,13 @@ const headerTitle = computed(() => {
     case 'exercises':
       return 'Exercise Management'
     case 'planner':
-      return 'Training Planner'
+      return 'Workout Planner'
     case 'calorietracker':
       return 'Calorie Tracker'
+    case 'tracker':
+      return 'Training Tracker'
+    case 'admin':
+      return 'Admin Dashboard'
     default:
       return 'Welcome to GymAIO'
   }
@@ -132,11 +136,11 @@ onUnmounted(() => {
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
                   ]"
                   active-class="bg-blue-700 text-white"
-                >Training Planner</RouterLink>
+                >Workout Planner</RouterLink>
               </li>
               <li>
                 <RouterLink
-                  to="/exercises"
+                  to="/tracker"
                   :class="[
                     'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
@@ -221,11 +225,11 @@ onUnmounted(() => {
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-600'
                   ]"
                   @click="mobileMenuOpen = false"
-                >Training Planner</RouterLink>
+                >Workout Planner</RouterLink>
               </li>
               <li>
                 <RouterLink
-                  to="/exercises"
+                  to="/tracker"
                   :class="[
                     'block px-4 py-3 font-medium transition-colors',
                     isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-600'

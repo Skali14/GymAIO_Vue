@@ -88,7 +88,7 @@
           :key="fileInputKey"
           name="exercise-form-explanation"
           accept="image/*"
-          @change="updateField('image', $event.target.files[0])"
+          @change="uploadImage($event)"
           class="w-full p-3 border border-gray-500 rounded-md text-base focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none transition-all duration-300"
         />
       </div>
@@ -170,6 +170,58 @@ export default {
       }
       // Emit the required event for v-model with the new object
       this.$emit('update:modelValue', updatedExercise)
+    },
+    uploadImage(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          // Create canvas for resizing
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+
+          // Calculate new dimensions
+          let width = img.width;
+          let height = img.height;
+          const MAX_WIDTH = 800;
+          const MAX_HEIGHT = 600;
+
+          // Calculate aspect ratio
+          const aspectRatio = width / height;
+
+          // Resize based on the larger dimension
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              width = MAX_WIDTH;
+              height = width / aspectRatio;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              height = MAX_HEIGHT;
+              width = height * aspectRatio;
+            }
+          }
+
+          // Set canvas dimensions
+          canvas.width = width;
+          canvas.height = height;
+
+          // Draw and resize image
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Convert to base64 with reduced quality
+          const resizedImage = canvas.toDataURL('image/jpeg', 0.7);
+          this.updateField('image', resizedImage);
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    removeImage() {
+      this.updateField('image', null);
     },
     // Method triggered by form submission
     handleSubmit() {
