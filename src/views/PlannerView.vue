@@ -69,7 +69,7 @@
                   <div v-else class="space-y-2">
                     <div
                       v-for="(exercise, index) in currentPlan.exercises"
-                      :key="`plan-${exercise.id}-${index}`"
+                      :key="`plan-${exercise._id}-${index}`"
                       class="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-move hover:-translate-y-0.5"
                       draggable="true"
                       @dragstart="handleExerciseDragStart($event, index)"
@@ -151,13 +151,26 @@
                 </div>
               </div>
 
-              <button
-                type="submit"
-                :disabled="currentPlan.exercises.length === 0"
-                class="w-full p-3 bg-green-600 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-green-700 hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:scale-100"
-              >
-                Save Workout Plan
-              </button>
+              <div :class="isEditing ? 'flex gap-4' : ''">
+                <button
+                  type="button"
+                  v-if="isEditing"
+                  @click="cancelEdit"
+                  class="w-full p-3 bg-gray-500 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-gray-600 hover:scale-105"
+                >
+                  Cancel Edit
+                </button>
+
+                <button
+                  type="submit"
+                  :disabled="currentPlan.exercises.length === 0"
+                  class="w-full p-3 bg-green-600 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-green-700 hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:scale-100"
+                >
+                  {{ isEditing ? 'Update Workout Plan' : 'Save Workout Plan' }}
+                </button>
+              </div>
+
+
             </form>
           </section>
         </div>
@@ -217,7 +230,7 @@
                 <tbody>
                 <tr
                   v-for="exercise in filteredExercises"
-                  :key="exercise.id"
+                  :key="exercise._id"
                   class="border-b border-gray-200 hover:bg-blue-50 transition-colors duration-200 cursor-grab active:cursor-grabbing hover:bg-blue-50"
                   draggable="true"
                   @dragstart="handleDragStart($event, exercise)"
@@ -309,7 +322,7 @@
                 <tbody>
                 <tr
                   v-for="plan in planStore.plans"
-                  :key="plan.id"
+                  :key="plan._id"
                   class="border-b border-gray-200 hover:bg-purple-50 transition-colors duration-200"
                 >
                   <td class="p-3 text-left">
@@ -359,7 +372,7 @@
                         </svg>
                       </button>
                       <button
-                        @click="deletePlan(plan.id)"
+                        @click="deletePlan(plan._id)"
                         title="Delete plan"
                         class="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-full transition-colors duration-200"
                       >
@@ -401,7 +414,7 @@ export default {
   data() {
     return {
       currentPlan: {
-        id: null,
+        _id: null,
         name: '',
         description: '',
         exercises: []
@@ -410,7 +423,8 @@ export default {
       draggedExercise: null,
       draggedIndex: null,
       difficultyFilter: '',
-      searchFilter: ''
+      searchFilter: '',
+      isEditing: false,
     }
   },
   computed: {
@@ -467,10 +481,10 @@ export default {
 
       if (this.draggedExercise) {
         // Check if exercise is already in the plan
-        const existingIndex = this.currentPlan.exercises.findIndex(ex => ex.id === this.draggedExercise.id)
+        const existingIndex = this.currentPlan.exercises.findIndex(ex => ex._id === this.draggedExercise._id)
         if (existingIndex === -1) {
           // Add default sets value when adding a new exercise
-          this.currentPlan.exercises.push({ 
+          this.currentPlan.exercises.push({
             ...this.draggedExercise,
             sets: 3 // Default number of sets
           })
@@ -505,7 +519,7 @@ export default {
       }
 
       try {
-        if (this.currentPlan.id) {
+        if (this.currentPlan._id) {
           // Update existing plan
           await this.planStore.updatePlan(this.currentPlan)
         } else {
@@ -521,7 +535,7 @@ export default {
 
     resetForm() {
       this.currentPlan = {
-        id: null,
+        _id: null,
         name: '',
         description: '',
         exercises: []
@@ -531,12 +545,25 @@ export default {
 
     editPlan(plan) {
       this.currentPlan = { ...plan }
+      this.isEditing = true
+      console.log('PlannerPage: Editing plan -', plan.name)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    },
+
+    cancelEdit() {
+      this.resetForm()
+      console.log('Cancelled edit.')
     },
 
     async deletePlan(planId) {
       if (confirm('Are you sure you want to delete this workout plan?')) {
         try {
           await this.planStore.deletePlan(planId)
+
+          if (this.isEditing && this.currentPlan._id === planId) {
+            console.log('PlannerPage: The currently edited plan was deleted. Resetting form.')
+            this.resetForm()
+          }
         } catch (error) {
           this.error = error.message || 'Failed to delete workout plan'
           alert(this.error)

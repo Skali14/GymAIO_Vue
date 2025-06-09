@@ -4,7 +4,7 @@ import apiClient from '@/api/apiClient';  // import the configured axios instanc
 
 export function createEmptyPlan() {
   return {
-      id: null,
+      _id: null,
       name: '',
       description: '',
       exercises: []
@@ -46,10 +46,10 @@ export const usePlanStore = defineStore('plan', {
     },
 
     async updatePlan(updatedPlanData) {
-      const index = this.plans.findIndex((plan) => plan.id === updatedPlanData.id)
+      const index = this.plans.findIndex((plan) => plan._id === updatedPlanData._id)
       if (index !== -1) {
         try {
-          const response = await apiClient.put(`/api/plans/${updatedPlanData.id}`, updatedPlanData);
+          const response = await apiClient.put(`/api/plans/${updatedPlanData._id}`, updatedPlanData);
           this.plans.splice(index, 1, { ...response.data.updatedPlan })
           console.log('Updated plan:', response.data.updatedPlan.name)
         } catch (error) {
@@ -57,16 +57,16 @@ export const usePlanStore = defineStore('plan', {
         }
 
       } else {
-        console.warn('PlanStore: Plan not found for update - ID:', updatedPlanData.id)
+        console.warn('PlanStore: Plan not found for update - ID:', updatedPlanData._id)
       }
     },
 
     async deletePlan(planId) {
       const initialLength = this.plans.length
-      const planName = this.plans.find((p) => p.id === planId)?.name || 'Unknown Plan'
+      const planName = this.plans.find((p) => p._id === planId)?.name || 'Unknown Plan'
       try {
         await apiClient.delete(`/api/plans/${planId}`)
-        this.plans = this.plans.filter((plan) => plan.id !== planId)
+        this.plans = this.plans.filter((plan) => plan._id !== planId)
         if (this.plans.length < initialLength) {
           console.log('PlanStore: Deleted plan - Name:', planName)
         } else {

@@ -16,7 +16,7 @@
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div
               v-for="plan in planStore.plans"
-              :key="plan.id"
+              :key="plan._id"
               class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all duration-200 cursor-pointer"
               @click="startWorkout(plan)"
             >
@@ -59,8 +59,8 @@
 
           <div v-if="recentWorkoutStore.recentWorkouts.length > 0" class="space-y-4">
             <div
-              v-for="workout in recentWorkoutStore.recentWorkouts"
-              :key="workout.id"
+              v-for="workout in recentWorkoutStore.recentWorkouts.slice(-10).reverse()"
+              :key="workout._id"
               class="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200"
             >
               <div class="flex justify-between items-start">
@@ -131,7 +131,7 @@
                 <div class="space-y-4">
                   <div
                     v-for="exercise in selectedWorkout.exercises"
-                    :key="exercise.id"
+                    :key="exercise._id"
                     class="bg-gray-50 rounded-lg p-4"
                   >
                     <div class="flex justify-between items-start">
@@ -390,7 +390,7 @@ export default {
     nextExercise() {
       if (this.currentReps && this.currentWeight) {
         this.exerciseResults.push({
-          exerciseId: this.currentExercise.id,
+          exerciseId: this.currentExercise._id,
           reps: parseInt(this.currentReps),
           weight: parseFloat(this.currentWeight),
           notes: this.notes
@@ -412,7 +412,7 @@ export default {
 
     skipExercise() {
       this.exerciseResults.push({
-        exerciseId: this.currentExercise.id,
+        exerciseId: this.currentExercise._id,
         skipped: true,
         notes: this.notes
       })
@@ -439,14 +439,14 @@ export default {
       this.stopTimer()
       // Save the workout results
       const completedWorkout = {
-        id: Date.now(), // Using timestamp as a simple ID
+        _id: null,
         planName: this.selectedPlan.name,
         date: new Date(),
         duration: this.timer,
         exercises: this.exerciseResults.map(result => {
-          const exercise = this.selectedPlan.exercises.find(ex => ex.id === result.exerciseId)
+          const exercise = this.selectedPlan.exercises.find(ex => ex._id === result.exerciseId)
           return {
-            id: exercise.id,
+            _id: exercise._id,
             name: exercise.name,
             sets: exercise.sets,
             reps: result.reps,

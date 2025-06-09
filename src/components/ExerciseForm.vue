@@ -125,7 +125,7 @@
 
         <button
           type="submit"
-          class="w-full p-3 bg-gray-500 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-blue-800 hover:scale-105 hover:border-2 hover:border-gray-200"
+          class="w-full p-3 bg-green-600 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-green-700 hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:scale-100"
         >
           {{ isEditing ? 'Update Exercise' : 'Add Exercise' }}
         </button>

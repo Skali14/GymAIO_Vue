@@ -4,7 +4,7 @@ import { usePlanStore } from './planStore'  // import the plan store
 
 export function createEmptyExercise() {
   return {
-    id: null,
+    _id: null,
     name: '',
     description: '',
     tags: [''],
@@ -39,6 +39,7 @@ export const useExerciseStore = defineStore('exercise', {
       try {
         const response = await apiClient.get('/api/exercises');
         this.exercises = response.data.exercises;
+        console.log(response.data.exercises);
       } catch (error) {
         this.handleApiError(error, 'Failed to fetch exercises');
       }
@@ -64,10 +65,10 @@ export const useExerciseStore = defineStore('exercise', {
     },
 
     async updateExercise(updatedExerciseData) {
-      const index = this.exercises.findIndex((exercise) => exercise.id === updatedExerciseData.id)
+      const index = this.exercises.findIndex((exercise) => exercise._id === updatedExerciseData._id)
       if (index !== -1) {
         try {
-          const response = await apiClient.put(`/api/exercises/${updatedExerciseData.id}`, updatedExerciseData);
+          const response = await apiClient.put(`/api/exercises/${updatedExerciseData._id}`, updatedExerciseData);
           this.exercises.splice(index, 1, { ...response.data.updatedExercise })
           console.log('Updated exercise:', response.data.updatedExercise.name)
         } catch (error) {
@@ -75,28 +76,28 @@ export const useExerciseStore = defineStore('exercise', {
         }
 
       } else {
-        console.warn('ExerciseStore: Exercise not found for update - ID:', updatedExerciseData.id)
+        console.warn('ExerciseStore: Exercise not found for update - ID:', updatedExerciseData._id)
       }
     },
 
     async deleteExercise(exerciseId) {
       const initialLength = this.exercises.length
-      const exerciseName = this.exercises.find((e) => e.id === exerciseId)?.name || 'Unknown Exercise'
+      const exerciseName = this.exercises.find((e) => e._id === exerciseId)?.name || 'Unknown Exercise'
       try {
         await apiClient.delete(`/api/exercises/${exerciseId}`)
-        this.exercises = this.exercises.filter((exercise) => exercise.id !== exerciseId)
+        this.exercises = this.exercises.filter((exercise) => exercise._id !== exerciseId)
 
         // Get the plan store instance
         const planStore = usePlanStore()
 
         // Update all plans to remove the deleted exercise
         for (const plan of planStore.plans) {
-          const updatedExercises = plan.exercises.filter(ex => ex.id !== exerciseId)
+          const updatedExercises = plan.exercises.filter(ex => ex._id !== exerciseId)
           if (updatedExercises.length !== plan.exercises.length) {
             // Only update if the exercise was actually in the plan
             if(updatedExercises.length === 0) {
               // If the exercise is not in any plan, delete the plan
-              await planStore.deletePlan(plan.id)
+              await planStore.deletePlan(plan._id)
             } else {
             const updatedPlan = {
               ...plan,
@@ -119,7 +120,7 @@ export const useExerciseStore = defineStore('exercise', {
     },
 
     async favoriteExercise(exerciseId) {
-      const exercise = this.exercises.find((e) => e.id === exerciseId)
+      const exercise = this.exercises.find((e) => e._id.toString() === exerciseId)
       try {
         await apiClient.patch(`/api/exercises/${exerciseId}?favorite=${!exercise.favorite}`)
         exercise.favorite = !exercise.favorite

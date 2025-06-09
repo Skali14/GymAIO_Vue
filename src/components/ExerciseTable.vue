@@ -21,7 +21,7 @@
         <tbody>
         <tr
           v-for="exercise in exercises"
-          :key="exercise.id"
+          :key="exercise._id"
           class="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-200"
         >
           <td class="p-3 text-left">{{ exercise.name }}</td>
@@ -72,7 +72,7 @@
 
               <button
                 v-if="tablename === 'My Exercises'"
-                @click.prevent="handleDeleteExercise(exercise.id, exercise.name)"
+                @click.prevent="handleDeleteExercise(exercise._id, exercise.name)"
                 title="Delete exercise"
                 class="p-1 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-full transition-colors duration-200"
               >
@@ -82,7 +82,7 @@
               </button>
 
               <button
-                @click.prevent="handleFavoriteExercise(exercise.id)"
+                @click.prevent="handleFavoriteExercise(exercise._id)"
                 title="Add to Favourites"
                 class="p-1 hover:bg-yellow-50 rounded-full transition-colors duration-200"
                 :class="exercise.favorite ? 'text-yellow-500 hover:text-yellow-600' : 'text-gray-400 hover:text-yellow-500'"

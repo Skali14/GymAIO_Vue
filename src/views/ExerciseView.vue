@@ -76,7 +76,7 @@ export default {
     handleExerciseDeleted(deletedExerciseId) {
       console.log('ExercisePage: Received exercise-deleted event for ID', deletedExerciseId)
 
-      if (this.isEditing && this.currentExercise.id === deletedExerciseId) {
+      if (this.isEditing && this.currentExercise._id === deletedExerciseId) {
         console.log('ExercisePage: The currently edited exercise was deleted. Resetting form.')
         this.resetForm()
       }
