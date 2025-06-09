@@ -57,9 +57,9 @@
             Recent Workouts
           </h2>
 
-          <div v-if="recentWorkouts.length > 0" class="space-y-4">
+          <div v-if="recentWorkoutStore.recentWorkouts.length > 0" class="space-y-4">
             <div
-              v-for="workout in recentWorkouts"
+              v-for="workout in recentWorkoutStore.recentWorkouts"
               :key="workout.id"
               class="bg-gray-50 rounded-lg p-4 hover:shadow-md transition-all duration-200"
             >
@@ -200,13 +200,13 @@
             <div>
               <h3 class="text-2xl font-bold mb-4">{{ currentExercise.name }}</h3>
               <p class="text-gray-600 mb-6">{{ currentExercise.description }}</p>
-              
+
               <div class="space-y-4">
                 <div class="flex items-center gap-2">
                   <span class="text-sm font-medium text-gray-500">Sets:</span>
                   <span class="text-sm">{{ currentExercise.sets }}</span>
                 </div>
-                
+
                 <div class="flex items-center gap-2">
                   <span class="text-sm font-medium text-gray-500">Difficulty:</span>
                   <span
@@ -325,6 +325,7 @@
 import { mapStores } from 'pinia'
 import { usePlanStore } from '@/stores/planStore'
 import { useExerciseStore } from '@/stores/exerciseStore'
+import { useRecentWorkoutStore } from '@/stores/recentWorkoutStore'
 
 export default {
   name: 'TrackerView',
@@ -339,24 +340,24 @@ export default {
       currentReps: '',
       currentWeight: '',
       notes: '',
-      recentWorkouts: [],
       selectedWorkout: null
     }
   },
   computed: {
     ...mapStores(usePlanStore),
     ...mapStores(useExerciseStore),
-    
+    ...mapStores(useRecentWorkoutStore),
+
     currentExercise() {
       if (!this.selectedPlan || this.currentExerciseIndex >= this.selectedPlan.exercises.length) return null
       return this.selectedPlan.exercises[this.currentExerciseIndex]
     },
-    
+
     isLastExercise() {
       if (!this.selectedPlan) return false
       return this.currentExerciseIndex === this.selectedPlan.exercises.length - 1
     },
-    
+
     formattedTime() {
       const minutes = Math.floor(this.timer / 60)
       const seconds = this.timer % 60
@@ -371,21 +372,21 @@ export default {
       this.exerciseResults = []
       this.startTimer()
     },
-    
+
     startTimer() {
       this.timer = 0
       this.timerInterval = setInterval(() => {
         this.timer++
       }, 1000)
     },
-    
+
     stopTimer() {
       if (this.timerInterval) {
         clearInterval(this.timerInterval)
         this.timerInterval = null
       }
     },
-    
+
     nextExercise() {
       if (this.currentReps && this.currentWeight) {
         this.exerciseResults.push({
@@ -394,11 +395,11 @@ export default {
           weight: parseFloat(this.currentWeight),
           notes: this.notes
         })
-        
+
         this.currentReps = ''
         this.currentWeight = ''
         this.notes = ''
-        
+
         if (this.isLastExercise) {
           this.finishWorkout()
         } else {
@@ -408,32 +409,32 @@ export default {
         alert('Please enter both reps and weight before proceeding.')
       }
     },
-    
+
     skipExercise() {
       this.exerciseResults.push({
         exerciseId: this.currentExercise.id,
         skipped: true,
         notes: this.notes
       })
-      
+
       this.currentReps = ''
       this.currentWeight = ''
       this.notes = ''
-      
+
       if (this.isLastExercise) {
         this.finishWorkout()
       } else {
         this.currentExerciseIndex++
       }
     },
-    
+
     cancelWorkout() {
       if (confirm('Are you sure you want to cancel this workout? All progress will be lost.')) {
         this.stopTimer()
         this.resetWorkout()
       }
     },
-    
+
     finishWorkout() {
       this.stopTimer()
       // Save the workout results
@@ -455,17 +456,11 @@ export default {
           }
         })
       }
-      
-      //TODO change this to a call to the backend
-      this.recentWorkouts.unshift(completedWorkout)
-      if (this.recentWorkouts.length > 10) {
-        this.recentWorkouts.pop() // Keep only last 10 workouts
-      }
-      localStorage.setItem('recentWorkouts', JSON.stringify(this.recentWorkouts))
-      
+
+      this.recentWorkoutStore.addRecentWorkout(completedWorkout)
       this.resetWorkout()
     },
-    
+
     resetWorkout() {
       this.selectedPlan = null
       this.isWorkoutActive = false
@@ -496,12 +491,9 @@ export default {
   },
   mounted() {
     this.planStore.callGetAllPlans()
-    // Load recent workouts from localStorage
-    const savedWorkouts = localStorage.getItem('recentWorkouts')
-    if (savedWorkouts) {
-      this.recentWorkouts = JSON.parse(savedWorkouts)
-    }
+    this.recentWorkoutStore.callGetAllRecentWorkouts()
   },
+
   beforeUnmount() {
     this.stopTimer()
   }
