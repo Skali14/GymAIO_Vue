@@ -552,6 +552,7 @@ export default {
 
     cancelEdit() {
       this.resetForm()
+      this.isEditing = false
       console.log('Cancelled edit.')
     },
 
