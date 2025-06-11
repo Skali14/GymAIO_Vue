@@ -135,15 +135,33 @@
                     class="bg-gray-50 rounded-lg p-4"
                   >
                     <div class="flex justify-between items-start">
-                      <div>
+                      <div class="w-full">
                         <h5 class="font-medium">{{ exercise.name }}</h5>
                         <div class="mt-2 space-y-1">
                           <div v-if="!exercise.skipped">
-                            <span class="text-sm text-gray-600">Sets: {{ exercise.sets }}</span>
-                            <span class="mx-2 text-gray-400">•</span>
-                            <span class="text-sm text-gray-600">Reps: {{ exercise.reps }}</span>
-                            <span class="mx-2 text-gray-400">•</span>
-                            <span class="text-sm text-gray-600">Weight: {{ exercise.weight }}kg</span>
+                            <!-- Display sets with individual reps and weights -->
+                            <div v-if="exercise.setData && exercise.setData.length > 0" class="space-y-2">
+                              <div class="text-sm text-gray-600 font-medium">Sets:</div>
+                              <div class="grid grid-cols-1 gap-2">
+                                <div
+                                  v-for="(set, index) in exercise.setData"
+                                  :key="index"
+                                  class="flex items-center gap-4 text-sm bg-white rounded p-2"
+                                >
+                                  <span class="font-medium">Set {{ index + 1 }}:</span>
+                                  <span>{{ set.reps }} reps</span>
+                                  <span>{{ set.weight }}kg</span>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Fallback for old data format -->
+                            <div v-else>
+                              <span class="text-sm text-gray-600">Sets: {{ exercise.sets }}</span>
+                              <span class="mx-2 text-gray-400">•</span>
+                              <span class="text-sm text-gray-600">Reps: {{ exercise.reps }}</span>
+                              <span class="mx-2 text-gray-400">•</span>
+                              <span class="text-sm text-gray-600">Weight: {{ exercise.weight }}kg</span>
+                            </div>
                           </div>
                           <div v-else class="text-sm text-red-600">
                             Exercise skipped
@@ -203,7 +221,7 @@
 
               <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                  <span class="text-sm font-medium text-gray-500">Sets:</span>
+                  <span class="text-sm font-medium text-gray-500">Target Sets:</span>
                   <span class="text-sm">{{ currentExercise.sets }}</span>
                 </div>
 
@@ -266,54 +284,102 @@
             </div>
           </div>
 
-          <!-- Exercise Input -->
-          <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Repetitions</label>
-              <input
-                type="number"
-                v-model="currentReps"
-                min="1"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none"
-                placeholder="Enter reps"
-              />
+          <!-- Sets Tracking -->
+          <div class="mt-8">
+            <div class="flex justify-between items-center mb-4">
+              <h4 class="text-lg font-semibold">Sets ({{ currentSets.length }}/{{ currentExercise.sets }})</h4>
+              <div class="text-sm text-gray-600">
+                Track each set individually
+              </div>
             </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Weight (kg)</label>
-              <input
-                type="number"
-                v-model="currentWeight"
-                min="0"
-                step="0.5"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none"
-                placeholder="Enter weight"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-              <input
-                type="text"
-                v-model="notes"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none"
-                placeholder="Add notes (optional)"
-              />
-            </div>
-          </div>
 
-          <!-- Navigation Buttons -->
-          <div class="mt-8 flex justify-end gap-4">
-            <button
-              @click="skipExercise"
-              class="px-6 py-3 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors duration-200"
-            >
-              Skip Exercise
-            </button>
-            <button
-              @click="nextExercise"
-              class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200"
-            >
-              {{ isLastExercise ? 'Finish Workout' : 'Next Exercise' }}
-            </button>
+            <!-- Completed Sets Display -->
+            <div v-if="currentSets.length > 0" class="mb-6">
+              <div class="space-y-2">
+                <div
+                  v-for="(set, index) in currentSets"
+                  :key="index"
+                  class="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg p-3"
+                >
+                  <div class="flex items-center gap-4">
+                    <span class="font-medium text-green-800">Set {{ index + 1 }}</span>
+                    <span class="text-sm text-green-700">{{ set.reps }} reps</span>
+                    <span class="text-sm text-green-700">{{ set.weight }}kg</span>
+                  </div>
+                  <button
+                    @click="removeSet(index)"
+                    class="text-red-500 hover:text-red-700 text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Current Set Input -->
+            <div v-if="currentSets.length < currentExercise.sets" class="bg-gray-50 rounded-lg p-4 mb-4">
+              <h5 class="font-medium mb-3">Set {{ currentSets.length + 1 }}</h5>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Repetitions</label>
+                  <input
+                    type="number"
+                    v-model="currentReps"
+                    min="1"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none"
+                    placeholder="Enter reps"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Weight (kg)</label>
+                  <input
+                    type="number"
+                    v-model="currentWeight"
+                    min="0"
+                    step="0.5"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none"
+                    placeholder="Enter weight"
+                  />
+                </div>
+              </div>
+              <div class="mt-4">
+                <button
+                  @click="addSet"
+                  :disabled="!currentReps || !currentWeight"
+                  class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  Add Set
+                </button>
+              </div>
+            </div>
+
+            <!-- Notes Section -->
+            <div class="mb-6">
+              <label class="block text-sm font-medium text-gray-700 mb-1">Notes (Optional)</label>
+              <textarea
+                v-model="notes"
+                rows="3"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none"
+                placeholder="Add any notes about this exercise..."
+              ></textarea>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-end gap-4">
+              <button
+                @click="skipExercise"
+                class="px-6 py-3 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors duration-200"
+              >
+                Skip Exercise
+              </button>
+              <button
+                @click="nextExercise"
+                :disabled="currentSets.length === 0"
+                class="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                {{ isLastExercise ? 'Finish Workout' : 'Next Exercise' }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -339,6 +405,7 @@ export default {
       exerciseResults: [],
       currentReps: '',
       currentWeight: '',
+      currentSets: [],
       notes: '',
       selectedWorkout: null
     }
@@ -370,6 +437,7 @@ export default {
       this.isWorkoutActive = true
       this.currentExerciseIndex = 0
       this.exerciseResults = []
+      this.currentSets = []
       this.startTimer()
     },
 
@@ -387,17 +455,30 @@ export default {
       }
     },
 
-    nextExercise() {
+    addSet() {
       if (this.currentReps && this.currentWeight) {
+        this.currentSets.push({
+          reps: parseInt(this.currentReps),
+          weight: parseFloat(this.currentWeight)
+        })
+        this.currentReps = ''
+        this.currentWeight = ''
+      }
+    },
+
+    removeSet(index) {
+      this.currentSets.splice(index, 1)
+    },
+
+    nextExercise() {
+      if (this.currentSets.length > 0) {
         this.exerciseResults.push({
           exerciseId: this.currentExercise._id,
-          reps: parseInt(this.currentReps),
-          weight: parseFloat(this.currentWeight),
+          setData: [...this.currentSets],
           notes: this.notes
         })
 
-        this.currentReps = ''
-        this.currentWeight = ''
+        this.currentSets = []
         this.notes = ''
 
         if (this.isLastExercise) {
@@ -406,7 +487,7 @@ export default {
           this.currentExerciseIndex++
         }
       } else {
-        alert('Please enter both reps and weight before proceeding.')
+        alert('Please complete at least one set before proceeding.')
       }
     },
 
@@ -417,8 +498,7 @@ export default {
         notes: this.notes
       })
 
-      this.currentReps = ''
-      this.currentWeight = ''
+      this.currentSets = []
       this.notes = ''
 
       if (this.isLastExercise) {
@@ -449,8 +529,7 @@ export default {
             _id: exercise._id,
             name: exercise.name,
             sets: exercise.sets,
-            reps: result.reps,
-            weight: result.weight,
+            setData: result.setData || [],
             notes: result.notes,
             skipped: result.skipped
           }
@@ -466,6 +545,7 @@ export default {
       this.isWorkoutActive = false
       this.currentExerciseIndex = 0
       this.exerciseResults = []
+      this.currentSets = []
       this.timer = 0
     },
 
