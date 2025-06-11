@@ -122,7 +122,7 @@
           Today's Meals
         </h2>
         <MealTable
-          :meals="mealStore.allMeals"
+          :meals="mealStore.todaysMeals"
           @edit-meal="(meal) => startEdit(meal)"
           @meal-deleted="(id) => handleMealDeleted(id)"
         />

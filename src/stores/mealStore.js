@@ -22,19 +22,39 @@ export const useMealStore = defineStore('meal', {
   }),
 
     getters: {
-    currentCalories: (state) => {
-        return state.meals.reduce((total, meal) => total + (Number(meal.calories) || 0), 0);
+    // Fixed: Define todaysMeals first since other getters depend on it
+    todaysMeals: (state) => {
+        // Frontend filtering for today's meals
+        const today = new Date();
+        const todayString = today.toISOString().split('T')[0]; // Get YYYY-MM-DD format
+        
+        return state.meals.filter(meal => {
+            if (!meal.lastModified) return false;
+            
+            // MongoDB/API serialization converts Date objects to ISO strings
+            const mealDate = new Date(meal.lastModified);
+            const mealDateString = mealDate.toISOString().split('T')[0];
+            return mealDateString === todayString;
+        });
     },
-    currentProteins: (state) => {
-        return state.meals.reduce((total, meal) => total + (Number(meal.proteins) || 0), 0);
+    
+    // Updated to use this.todaysMeals (referring to the getter above)
+    currentCalories() {
+        return this.todaysMeals.reduce((total, meal) => total + (Number(meal.calories) || 0), 0);
     },
-    currentCarbohydrates: (state) => {
-        return state.meals.reduce((total, meal) => total + (Number(meal.carbohydrates) || 0), 0);
+    currentProteins() {
+        return this.todaysMeals.reduce((total, meal) => total + (Number(meal.proteins) || 0), 0);
     },
-    currentFats: (state) => {
-        return state.meals.reduce((total, meal) => total + (Number(meal.fats) || 0), 0);
+    currentCarbohydrates() {
+        return this.todaysMeals.reduce((total, meal) => total + (Number(meal.carbohydrates) || 0), 0);
+    },
+    currentFats() {
+        return this.todaysMeals.reduce((total, meal) => total + (Number(meal.fats) || 0), 0);
     },
     mealCount: (state) => state.meals.length,
+    todaysMealCount() {
+        return this.todaysMeals.length;
+    },
     allMeals: (state) => state.meals,
     },
 

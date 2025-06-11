@@ -6,6 +6,7 @@ import SignUpView from '@/views/SignUpView.vue'
 import PlannerView from '@/views/PlannerView.vue'
 import { useAuthStore } from '@/stores/authStore';
 import TrackerView from '@/views/TrackerView.vue'
+import UserDashboardView from '@/views/UserDashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,6 +49,12 @@ const router = createRouter({
       path: '/signup',
       name: 'SignUpView',
       component: SignUpView,
+    },
+    {
+      path: '/dashboard',
+      name: 'UserDashboard',
+      component: UserDashboardView,
+      meta: { requiresAuth: true }
     },
 
   ],
