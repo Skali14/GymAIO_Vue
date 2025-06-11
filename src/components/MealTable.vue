@@ -15,7 +15,7 @@
                 </thead>
 
         <tbody>
-          <tr class="hover:bg-gray-200" v-for="meal in meals" :key="meal.id">
+          <tr class="hover:bg-gray-200" v-for="meal in meals" :key="meal._id">
             <td class="p-3 border-b border-gray-300 text-center">{{ meal.name }}</td>
             <td class="p-3 border-b border-gray-300 text-center">{{ meal.calories }}</td>
             <td class="p-3 border-b border-gray-300 text-center">{{ meal.proteins }}</td>
@@ -29,7 +29,7 @@
                 <a href="#edit" @click.prevent="requestEdit(meal)"
                   ><img src="/edit.svg" alt="Modify" width="16" height="16"
                 /></a>
-                <a href="#delete" @click.prevent="handleDelete(meal.id, meal.name)"
+                <a href="#delete" @click.prevent="handleDelete(meal._id, meal.name)"
                   ><img src="/trash.svg" alt="Delete" width="16" height="16"
                 /></a>
               </div>

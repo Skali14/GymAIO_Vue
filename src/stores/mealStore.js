@@ -5,7 +5,7 @@ import apiClient from '@/api/apiClient';  // import the configured axios instanc
   // Initial meal data structure helper
 export function createEmptyMeal() {
       return {
-          id: null, // Important: null for new, set during edit
+          _id: null, // Important: null for new, set during edit
           name: '',
           calories: 0,
           proteins: 0,
@@ -45,6 +45,7 @@ export const useMealStore = defineStore('meal', {
       try {
         const response = await apiClient.get('/api/meals');
         this.meals = response.data.meals;
+        console.log(response.data.meals);
       } catch (error) {
         this.handleApiError(error, 'Failed to fetch meals');
       }
@@ -66,16 +67,16 @@ export const useMealStore = defineStore('meal', {
     async updateMeal(updatedMealData) {
       try {
         // Update existing meal
-        const response = await apiClient.put(`/api/meals/${updatedMealData.id}`, updatedMealData);
+        const response = await apiClient.put(`/api/meals/${updatedMealData._id}`, updatedMealData);
         // Update the local array with the response from the server
 
-        const index = this.meals.findIndex((meals) => meals.id === updatedMealData.id)
+        const index = this.meals.findIndex((meals) => meals._id === updatedMealData._id)
         if (index !== -1) {
           // Replace the item at the found index with the updated data
           this.meals.splice(index, 1, { ...updatedMealData }) // Use a copy
           console.log('MealStore: Updated meal -', updatedMealData.name)
         } else {
-          console.warn('Mealstore: Meal not found for update - ID:', updatedMealData.id)
+          console.warn('Mealstore: Meal not found for update - ID:', updatedMealData._id)
         }
       } catch (error) {
         this.handleApiError(error, `Failed to update Meal`);
@@ -87,7 +88,7 @@ export const useMealStore = defineStore('meal', {
       try {
         await apiClient.delete(`/api/meals/${mealId}`);
         // Filter the array, keeping only dishes that DON'T match the ID
-        this.meals = this.meals.filter((meal) => meal.id !== mealId)
+        this.meals = this.meals.filter((meal) => meal._id !== mealId)
         console.log('Deleted meal ID:', mealId);
       } catch (error) {
         this.handleApiError(error, "Failed to delete meal")
