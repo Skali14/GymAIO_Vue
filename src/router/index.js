@@ -63,6 +63,17 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const auth = useAuthStore();
 
+  // Ensure the store is initialized before making the auth check
+  if (auth.token && !auth.isAuthenticated) {
+    await auth.fetchUser();
+  }
+
+    // Redirect from "/" to dashboard if user is authenticated
+  if (to.path === '/' && auth.isAuthenticated) {
+    next('/dashboard');
+    return;
+  }
+
   if (to.meta.requiresAuth && !auth.isAuthenticated) {
     next('/login');
   } else {
