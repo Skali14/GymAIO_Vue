@@ -167,7 +167,7 @@ export default {
         await this.authStore.login(this.loginForm.email, this.loginForm.password)
         
         // Handle successful login - redirect to dashboard/main app
-        router.push({ name: 'calorietracker' });
+        router.push({ name: 'UserDashboard' });
         
       } catch (error) {
         this.errorMessage = error.message || 'Login failed. Please try again.'
