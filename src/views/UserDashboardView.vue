@@ -10,7 +10,7 @@
           </div>
           <div class="text-right">
             <div class="text-sm text-gray-500">{{ getCurrentDate() }}</div>
-            <div class="text-lg font-semibold text-blue-600">Welcome back, {{ currentUser?.name || 'User' }}!</div>
+            <div class="text-lg font-semibold text-blue-600">Welcome back, {{ currentUser?.firstname || 'User' }}!</div>
           </div>
         </div>
       </section>
@@ -23,7 +23,7 @@
             <div>
               <p class="text-sm font-medium text-gray-600">Today's Calories</p>
               <p class="text-2xl font-bold text-blue-600">{{ todayCalories }}</p>
-              <p class="text-xs text-gray-500">Goal: {{ calorieGoal }}</p>
+              <p class="text-xs text-gray-500">Goal: {{ goalStore.calorieGoal || 'Not set' }}</p>
             </div>
             <div class="bg-blue-100 p-3 rounded-full">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -35,7 +35,7 @@
             <div class="w-full bg-gray-200 rounded-full h-2">
               <div 
                 class="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                :style="{ width: `${Math.min((todayCalories / calorieGoal) * 100, 100)}%` }"
+                :style="{ width: `${getProgressPercentage(todayCalories, goalStore.calorieGoal)}%` }"
               ></div>
             </div>
           </div>
@@ -173,59 +173,68 @@
             Today's Nutrition
           </h3>
 
-          <div class="space-y-4">
+          <!-- Show message if no goals are set -->
+          <div v-if="!goalStore.hasGoalsSet" class="text-center py-4 text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+            <p class="text-sm">No nutrition goals set</p>
+            <p class="text-xs mt-1">Set your goals to track progress</p>
+          </div>
+
+          <div v-else class="space-y-4">
             <!-- Calories Goal -->
-            <div>
+            <div v-if="goalStore.calorieGoal > 0">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-sm font-medium text-gray-700">Calories</span>
-                <span class="text-sm text-gray-600">{{ todayCalories }}/{{ calorieGoal }}</span>
+                <span class="text-sm text-gray-600">{{ todayCalories }}/{{ goalStore.calorieGoal }}</span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
                 <div 
                   class="bg-blue-500 h-2 rounded-full transition-all duration-300"
-                  :style="{ width: `${Math.min((todayCalories / calorieGoal) * 100, 100)}%` }"
+                  :style="{ width: `${getProgressPercentage(todayCalories, goalStore.calorieGoal)}%` }"
                 ></div>
               </div>
             </div>
 
             <!-- Protein Goal -->
-            <div>
+            <div v-if="goalStore.proteinGoal > 0">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-sm font-medium text-gray-700">Protein</span>
-                <span class="text-sm text-gray-600">{{ todayProtein }}g/{{ proteinGoal }}g</span>
+                <span class="text-sm text-gray-600">{{ todayProtein }}g/{{ goalStore.proteinGoal }}g</span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
                 <div 
                   class="bg-green-500 h-2 rounded-full transition-all duration-300"
-                  :style="{ width: `${Math.min((todayProtein / proteinGoal) * 100, 100)}%` }"
+                  :style="{ width: `${getProgressPercentage(todayProtein, goalStore.proteinGoal)}%` }"
                 ></div>
               </div>
             </div>
 
             <!-- Carbs Goal -->
-            <div>
+            <div v-if="goalStore.carbsGoal > 0">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-sm font-medium text-gray-700">Carbohydrates</span>
-                <span class="text-sm text-gray-600">{{ todayCarbs }}g/{{ carbsGoal }}g</span>
+                <span class="text-sm text-gray-600">{{ todayCarbs }}g/{{ goalStore.carbsGoal }}g</span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
                 <div 
                   class="bg-yellow-500 h-2 rounded-full transition-all duration-300"
-                  :style="{ width: `${Math.min((todayCarbs / carbsGoal) * 100, 100)}%` }"
+                  :style="{ width: `${getProgressPercentage(todayCarbs, goalStore.carbsGoal)}%` }"
                 ></div>
               </div>
             </div>
 
             <!-- Fats Goal -->
-            <div>
+            <div v-if="goalStore.fatsGoal > 0">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-sm font-medium text-gray-700">Fats</span>
-                <span class="text-sm text-gray-600">{{ todayFats }}g/{{ fatsGoal }}g</span>
+                <span class="text-sm text-gray-600">{{ todayFats }}g/{{ goalStore.fatsGoal }}g</span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
                 <div 
                   class="bg-purple-500 h-2 rounded-full transition-all duration-300"
-                  :style="{ width: `${Math.min((todayFats / fatsGoal) * 100, 100)}%` }"
+                  :style="{ width: `${getProgressPercentage(todayFats, goalStore.fatsGoal)}%` }"
                 ></div>
               </div>
             </div>
@@ -253,6 +262,7 @@ import { useRecentWorkoutStore } from '@/stores/recentWorkoutStore'
 import { useExerciseStore } from '@/stores/exerciseStore'
 import { useMealStore } from '@/stores/mealStore'
 import { useAuthStore } from '@/stores/authStore'
+import { useGoalStore } from '@/stores/goalStore'
 
 ChartJS.register(
   CategoryScale,
@@ -271,12 +281,6 @@ export default {
   },
   data() {
     return {
-      // Nutrition goals - these could come from a settings store later
-      calorieGoal: 2200,
-      proteinGoal: 150,
-      carbsGoal: 220,
-      fatsGoal: 80,
-      
       // Chart controls
       calorieChartPeriod: 7,
       selectedExercise: '',
@@ -292,13 +296,15 @@ export default {
     const exerciseStore = useExerciseStore()
     const mealStore = useMealStore()
     const authStore = useAuthStore()
+    const goalStore = useGoalStore()
 
     return {
       planStore,
       recentWorkoutStore,
       exerciseStore,
       mealStore,
-      authStore
+      authStore,
+      goalStore
     }
   },
   computed: {
@@ -341,8 +347,9 @@ export default {
         
         // Get actual calorie data for this date
         const dayCalories = this.getCaloriesForDate(date)
+        console.log(dayCalories, date)
         data.push(dayCalories)
-        goalLine.push(this.calorieGoal)
+        goalLine.push(this.goalStore.calorieGoal || 0)
       }
       
       return {
@@ -356,14 +363,14 @@ export default {
             tension: 0.4,
             fill: true
           },
-          {
+          ...(this.goalStore.calorieGoal > 0 ? [{
             label: 'Goal',
             data: goalLine,
             borderColor: 'rgb(239, 68, 68)',
             backgroundColor: 'transparent',
             borderDash: [5, 5],
             pointRadius: 0
-          }
+          }] : [])
         ]
       }
     },
@@ -379,8 +386,8 @@ export default {
         },
         scales: {
           y: {
-            beginAtZero: false,
-            min: 1200
+            beginAtZero: true,
+            suggestedMax: this.goalStore.calorieGoal || 4000
           }
         }
       }
@@ -516,6 +523,11 @@ export default {
       }, 0)
     },
     
+    getProgressPercentage(current, goal) {
+      if (!goal || goal <= 0) return 0
+      return Math.min((current / goal) * 100, 100)
+    },
+    
     calculateWeeklyWorkouts() {
       const oneWeekAgo = new Date()
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
@@ -541,7 +553,8 @@ export default {
           this.recentWorkoutStore.callGetAllRecentWorkouts(),
           this.exerciseStore.callGetAllExercises(),
           this.mealStore.getAllMeals(),
-          this.authStore.fetchUser()
+          this.authStore.fetchUser(),
+          this.goalStore.getAllGoals()
         ])
         
         // Calculate weekly workout stats after data is loaded

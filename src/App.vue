@@ -158,6 +158,18 @@ onUnmounted(() => {
                   active-class="bg-blue-700 text-white"
                 >Calorie Tracker</RouterLink>
               </li>
+
+              <li>
+                <RouterLink
+                  to="/dashboard"
+                  :class="[
+                    'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
+                    isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
+                  ]"
+                  active-class="bg-blue-700 text-white"
+                >Dashboard</RouterLink>
+              </li>
+
               <!-- Admin Dashboard - Only show if user is admin -->
               <li v-if="isAdmin">
                 <RouterLink

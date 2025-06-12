@@ -1,4 +1,3 @@
-
 <template>
   <main class="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 text-gray-800 font-sans p-4 md:p-6 lg:p-8">
     <div class="max-w-7xl mx-auto">
@@ -37,7 +36,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <!-- Loop through the goals and display -->
             <div 
-              v-for="(goalValue, goalType) in goal" 
+              v-for="(goalValue, goalType) in goalStore.allGoals" 
               :key="goalType" 
               class="bg-gray-50 p-4 rounded-lg border border-gray-200 transition-all hover:shadow-md"
             >
@@ -45,7 +44,7 @@
                 <span class="text-lg font-semibold capitalize">{{ goalType }}</span>
                 <div class="inline-flex gap-2 items-center">
                   <button
-                    @click.prevent="startEditGoal(goalType, goal[goalType])"
+                    @click.prevent="startEditGoal(goalType, goalValue)"
                     v-if="editingGoalType !== goalType"
                     class="text-blue-500 hover:text-blue-700 p-1 rounded-full hover:bg-blue-50 transition-colors"
                     aria-label="Edit goal"
@@ -95,7 +94,7 @@
                     class="w-24 p-2 border border-blue-300 rounded-md text-base text-center focus:ring-2 focus:ring-blue-200 focus:border-blue-500 focus:outline-none"
                   />
                 </div>
-                <div v-else class="text-2xl font-bold text-blue-600">{{ goal[goalType] }}</div>
+                <div v-else class="text-2xl font-bold text-blue-600">{{ goalValue }}</div>
                 <span class="text-sm bg-blue-100 text-blue-700 px-2 py-1 rounded-full">Target</span>
               </div>
 
@@ -105,7 +104,7 @@
               </div>
 
               <!-- Progress bar for each goal -->
-              <ProgressBar :current="mealStore[`current${capitalize(goalType)}`]" :toReach="goal[goalType]" />
+              <ProgressBar :current="mealStore[`current${capitalize(goalType)}`]" :toReach="goalValue" />
             </div>
           </div>
         </section>
@@ -136,15 +135,14 @@
   import MealTable from '@/components/MealTable.vue';
   import { mapStores } from 'pinia';
   import { useMealStore, createEmptyMeal } from '@/stores/mealStore.js';
+  import { useGoalStore } from '@/stores/goalStore.js';
   import ProgressBar from '@/components/ProgressBar.vue';
-  import apiClient from '@/api/apiClient';  // import the configured axios instance
 
   export default {
     name: 'CalorieView',
     components: { MealForm, MealTable, ProgressBar },
     data() {
       return {
-        goal: {},
         editingGoalType: null,
         editingGoalValue: 0,
         currentMeal: createEmptyMeal(),
@@ -152,7 +150,7 @@
       };
     },
     computed: {
-      ...mapStores(useMealStore),
+      ...mapStores(useMealStore, useGoalStore),
     },
     methods: {
       handleFormSubmit() {
@@ -190,15 +188,11 @@
           return;
         }
         try {
-          const response = await apiClient.put('/api/goals', {
-            goalType: type,
-            value: this.editingGoalValue
-          });
-          this.goal[type] = this.editingGoalValue;
+          await this.goalStore.updateGoal(type, this.editingGoalValue);
           this.editingGoalType = null;
           this.editingGoalValue = 0;
         } catch (error) {
-          this.handleApiError(error, "Failed to update goal")
+          console.error("Failed to update goal:", error);
         }
       },
       cancelEditGoal() {
@@ -209,48 +203,23 @@
       async deleteGoal(type) {
         if (confirm(`Are you sure you want to delete the ${type} goal?`)) {
           try {
-            const response = await apiClient.put('/api/goals', {
-              goalType: type,
-              value: 0
-            });
-            this.goal[type] = 0;
+            await this.goalStore.deleteGoal(type);
           } catch (error) {
-            this.handleApiError(error, "Failed to delete goal")
+            console.error("Failed to delete goal:", error);
+            // You might want to show a user-friendly error message here
           }
         }
       },
       capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);
-      },
-      async getAllGoals() {
-        try {
-          const response = await apiClient.get("/api/goals/")
-          this.goal = response.data.goals
-        } catch (error) {
-          this.handleApiError(error, "Failed to get goals")
-        }
-      },
-          // Centralized error handler for API calls
-      handleApiError(error, contextMessage = 'An API error occurred') {
-        console.error(contextMessage, error); // Log the full error for debugging
-        if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-          this.latestErrorMessage = error.response.data;
-        } else if (error.request) {
-          // The request was made but no response was received
-          this.latestErrorMessage = 'No response from server. Please check your network connection.';
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          this.latestErrorMessage = error.message || 'Error setting up the request.';
-        }
+      }
     },
-
-    },
-    mounted() {
+    async mounted() {
       console.log('CalorieView mounted')
-      this.mealStore.getAllMeals()
-      this.getAllGoals()
+      await Promise.all([
+        this.mealStore.getAllMeals(),
+        this.goalStore.getAllGoals()
+      ]);
     },
   };
 </script>
