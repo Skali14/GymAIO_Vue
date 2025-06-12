@@ -259,6 +259,16 @@ onUnmounted(() => {
                   @click="mobileMenuOpen = false"
                 >Calorie Tracker</RouterLink>
               </li>
+              <li>
+                <RouterLink
+                  to="/dashboard"
+                  :class="[
+                    'block px-4 py-3 font-medium transition-colors',
+                    isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-600'
+                  ]"
+                  @click="mobileMenuOpen = false"
+                >Dashboard</RouterLink>
+              </li>
               <!-- Admin Dashboard - Mobile - Only show if user is admin -->
               <li v-if="isAdmin">
                 <RouterLink
