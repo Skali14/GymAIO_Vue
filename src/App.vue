@@ -120,6 +120,17 @@ onUnmounted(() => {
             <ul class="flex items-center flex-wrap space-x-0.5">
               <li>
                 <RouterLink
+                  to="/dashboard"
+                  :class="[
+                    'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
+                    isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
+                  ]"
+                  active-class="bg-blue-700 text-white"
+                >Dashboard</RouterLink>
+              </li>
+
+              <li>
+                <RouterLink
                   to="/exercises"
                   :class="[
                     'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
@@ -157,17 +168,6 @@ onUnmounted(() => {
                   ]"
                   active-class="bg-blue-700 text-white"
                 >Calorie Tracker</RouterLink>
-              </li>
-
-              <li>
-                <RouterLink
-                  to="/dashboard"
-                  :class="[
-                    'px-2 py-2 rounded-md text-sm font-medium transition-all duration-200 whitespace-nowrap',
-                    isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-700'
-                  ]"
-                  active-class="bg-blue-700 text-white"
-                >Dashboard</RouterLink>
               </li>
 
               <!-- Admin Dashboard - Only show if user is admin -->
@@ -221,6 +221,16 @@ onUnmounted(() => {
             <ul class="divide-y" :class="isScrolled ? 'divide-gray-200' : 'divide-blue-600'">
               <li>
                 <RouterLink
+                  to="/dashboard"
+                  :class="[
+                    'block px-4 py-3 font-medium transition-colors',
+                    isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-600'
+                  ]"
+                  @click="mobileMenuOpen = false"
+                >Dashboard</RouterLink>
+              </li>
+              <li>
+                <RouterLink
                   to="/exercises"
                   :class="[
                     'block px-4 py-3 font-medium transition-colors',
@@ -258,16 +268,6 @@ onUnmounted(() => {
                   ]"
                   @click="mobileMenuOpen = false"
                 >Calorie Tracker</RouterLink>
-              </li>
-              <li>
-                <RouterLink
-                  to="/dashboard"
-                  :class="[
-                    'block px-4 py-3 font-medium transition-colors',
-                    isScrolled ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-600' : 'text-white hover:bg-blue-600'
-                  ]"
-                  @click="mobileMenuOpen = false"
-                >Dashboard</RouterLink>
               </li>
               <!-- Admin Dashboard - Mobile - Only show if user is admin -->
               <li v-if="isAdmin">
