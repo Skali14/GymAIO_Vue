@@ -7,10 +7,10 @@ export function createEmptyMeal() {
       return {
           _id: null, // Important: null for new, set during edit
           name: '',
-          calories: 0,
-          proteins: 0,
-          carbohydrates: 0,
-          fats: 0,
+          calories: null,
+          proteins: null,
+          carbohydrates: null,
+          fats: null,
           vegetarian: false
       };
   }
@@ -27,17 +27,17 @@ export const useMealStore = defineStore('meal', {
         // Frontend filtering for today's meals
         const today = new Date();
         const todayString = today.toISOString().split('T')[0]; // Get YYYY-MM-DD format
-        
+
         return state.meals.filter(meal => {
             if (!meal.lastModified) return false;
-            
+
             // MongoDB/API serialization converts Date objects to ISO strings
             const mealDate = new Date(meal.lastModified);
             const mealDateString = mealDate.toISOString().split('T')[0];
             return mealDateString === todayString;
         });
     },
-    
+
     // Updated to use this.todaysMeals (referring to the getter above)
     currentCalories() {
         return this.todaysMeals.reduce((total, meal) => total + (Number(meal.calories) || 0), 0);

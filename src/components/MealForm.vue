@@ -6,7 +6,7 @@
                     <input type="text" id="meal-name"
                         :value="modelValue.name"
                         @input="updateField('name', $event.target.value)"
-                        name="meal-name" required class="w-full p-3 border border-gray-500 rounded-md text-base">
+                        name="meal-name" placeholder="e.g. Spaghetti Bolognese" required class="w-full p-3 border border-gray-500 rounded-md text-base">
                 </div>
 
       <div class="mb-4">
@@ -18,6 +18,7 @@
           @input="updateField('calories', $event.target.value)"
           name="meal-calories"
           min="0"
+          placeholder="e.g. 700"
           required
           class="w-full p-3 border border-gray-500 rounded-md text-base"
         />
@@ -32,6 +33,7 @@
           @input="updateField('proteins', $event.target.value)"
           name="meal-proteins"
           min="0"
+          placeholder="e.g. 35"
           class="w-full p-3 border border-gray-500 rounded-md text-base"
         />
       </div>
@@ -45,6 +47,7 @@
           @input="updateField('carbohydrates', $event.target.value)"
           name="meal-carbohydrates"
           min="0"
+          placeholder="e.g. 120"
           class="w-full p-3 border border-gray-500 rounded-md text-base"
         />
       </div>
@@ -58,6 +61,7 @@
           @input="updateField('fats', $event.target.value)"
           name="meal-fats"
           min="0"
+          placeholder="e.g. 25"
           class="w-full p-3 border border-gray-500 rounded-md text-base"
         />
       </div>
@@ -78,19 +82,20 @@
 
       <div :class="isEditing ? 'flex gap-4' : ''">
         <button
-          type="submit"
-          class="w-full p-3 bg-gray-500 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-blue-800 hover:scale-105 hover:border-2 hover:border-gray-200"
-        >
-          {{ isEditing ? 'Confirm Edit' : 'Submit Meal' }}
-        </button>
-
-        <button
           v-if="isEditing"
           type="button"
           @click="handleCancel"
           class="w-full p-3 bg-gray-500 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-blue-800 hover:scale-105 hover:border-2 hover:border-gray-200"
         >
           Cancel Edit
+        </button>
+
+        <button
+          type="submit"
+          :disabled="!modelValue.name"
+          class="w-full p-3 bg-green-600 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-green-700 hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:scale-100"
+        >
+          {{ isEditing ? 'Confirm Edit' : 'Submit Meal' }}
         </button>
       </div>
     </form>

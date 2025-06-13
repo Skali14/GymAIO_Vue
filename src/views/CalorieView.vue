@@ -35,9 +35,9 @@
           <!-- Goal Cards Grid -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <!-- Loop through the goals and display -->
-            <div 
-              v-for="(goalValue, goalType) in goalStore.allGoals" 
-              :key="goalType" 
+            <div
+              v-for="(goalValue, goalType) in goalStore.allGoals"
+              :key="goalType"
               class="bg-gray-50 p-4 rounded-lg border border-gray-200 transition-all hover:shadow-md"
             >
               <div class="flex justify-between items-center mb-3">
@@ -154,10 +154,19 @@
     },
     methods: {
       handleFormSubmit() {
+
+        const mealToSave = {
+          ...this.currentMeal,
+          calories: Number(this.currentMeal.calories) || 0,
+          proteins: Number(this.currentMeal.proteins) || 0,
+          carbohydrates: Number(this.currentMeal.carbohydrates) || 0,
+          fats: Number(this.currentMeal.fats) || 0,
+        };
+
         if (this.isEditing) {
-          this.mealStore.updateMeal({ ...this.currentMeal });
+          this.mealStore.updateMeal( mealToSave );
         } else {
-          this.mealStore.addMeal({ ...this.currentMeal });
+          this.mealStore.addMeal( mealToSave );
         }
         this.resetForm();
       },

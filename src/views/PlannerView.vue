@@ -163,7 +163,7 @@
 
                 <button
                   type="submit"
-                  :disabled="currentPlan.exercises.length === 0"
+                  :disabled="currentPlan.exercises.length === 0 || !currentPlan.name"
                   class="w-full p-3 bg-green-600 text-white cursor-pointer border-none rounded-md transition-all duration-300 font-bold hover:bg-green-700 hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   {{ isEditing ? 'Update Workout Plan' : 'Save Workout Plan' }}
