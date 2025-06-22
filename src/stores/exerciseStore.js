@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import apiClient from '@/api/apiClient';  // import the configured axios instance
 import { usePlanStore } from './planStore'  // import the plan store
+import {useAuthStore} from './authStore'
 
 export function createEmptyExercise() {
   return {
@@ -163,7 +164,9 @@ export const useExerciseStore = defineStore('exercise', {
   setupWebSocket() {
   // Connect to our standalone WebSocket server on port 3002
   const interestsString = this.interests.join(',');
-  const wsUrl = `ws://localhost:3002?interests=${encodeURIComponent(interestsString)}`;
+  const authStore = useAuthStore();
+  console.log('Auth Store : ', authStore.currentUser);
+  const wsUrl = `ws://localhost:3002?id=${authStore.currentUser.id}&interests=${encodeURIComponent(interestsString)}`;
   this.websocket = new WebSocket(wsUrl);
 
   this.websocket.onopen = () => {
@@ -171,6 +174,7 @@ export const useExerciseStore = defineStore('exercise', {
   };
   this.websocket.onmessage = (event) => {
     console.log('Message from server: ', event.data);
+    this.handleWebSocketMessage(event);
   };
   this.websocket.onerror = (error) => {
     console.error('WebSocket error:', error);
@@ -232,12 +236,6 @@ async handleExerciseDeleted(exerciseId) {
       await planStore.updatePlan(updatedPlan)
       }
     }
-  }
-
-  if (this.exercises.length < initialLength) {
-    console.log('ExerciseStore: Deleted exercise - Name:', exerciseName)
-  } else {
-    console.warn('ExerciseStore: Exercise not found for deletion - ID:', exerciseId)
   }
 },
 },

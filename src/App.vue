@@ -43,10 +43,11 @@ watch(() => route.path, () => {
   })
 })
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('scroll', checkScroll)
   checkScroll()
-  exerciseStore.setupWebSocket()
+  await authStore.fetchUser()
+  await exerciseStore.setupWebSocket()
 })
 
 onUnmounted(() => {
@@ -313,7 +314,7 @@ onUnmounted(() => {
               alt="GymAIO Logo"
               class="w-10 h-10 rounded-full object-cover border border-gray-600"
             />
-            <p class="ml-3 font-medium">GymAIO - {{ headerTitle }}</p>
+            <p class="ml-3 font-medium">GymAIO</p>
           </div>
           <div class="flex space-x-6">
             <a href="#" class="text-gray-300 hover:text-white transition-colors">
