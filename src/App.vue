@@ -9,23 +9,6 @@ const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
 const router = useRouter()
 
-const headerTitle = computed(() => {
-  switch (route.name) {
-    case 'exercises':
-      return 'Exercise Management'
-    case 'planner':
-      return 'Workout Planner'
-    case 'calorietracker':
-      return 'Calorie Tracker'
-    case 'tracker':
-      return 'Training Tracker'
-    case 'admin':
-      return 'Admin Dashboard'
-    default:
-      return 'Welcome to GymAIO'
-  }
-})
-
 // Check if user is admin
 const isAdmin = computed(() => {
   return authStore.isAdmin
@@ -94,7 +77,7 @@ onUnmounted(() => {
                 isScrolled ? 'text-blue-600' : 'text-white'
               ]"
             >
-              {{ headerTitle }}
+              GymAIO
             </h1>
           </div>
 

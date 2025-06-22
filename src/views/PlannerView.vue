@@ -1,6 +1,10 @@
 <template>
   <main class="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 text-gray-800 font-sans p-4 md:p-6 lg:p-8">
     <div class="max-w-7xl mx-auto">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Workout Planner</h1>
+        <p class="text-gray-600">Create and compose workouts as you wish</p>
+      </div>
       <div class="flex flex-col lg:flex-row gap-8">
         <div class="flex-1 lg:max-w-md">
           <section

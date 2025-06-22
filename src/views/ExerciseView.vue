@@ -2,6 +2,10 @@
   <main class="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 text-gray-800 font-sans p-4 md:p-6 lg:p-8">
     <div class="max-w-7xl mx-auto">
       <!-- Main Content Container -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Exercise Management</h1>
+        <p class="text-gray-600">Access shared exercises and create your own</p>
+      </div>
       <div class="flex flex-col lg:flex-row gap-8">
         <!-- Left: Exercise Form Section -->
         <div class="flex-1 lg:max-w-md">
@@ -66,6 +70,8 @@ export default {
   },
   methods: {
     handleFormSubmit() {
+      this.currentExercise.own = true
+
       if (this.isEditing) {
         this.exerciseStore.updateExercise({ ...this.currentExercise })
       } else {

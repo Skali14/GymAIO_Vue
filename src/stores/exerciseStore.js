@@ -46,16 +46,13 @@ export const useExerciseStore = defineStore('exercise', {
     },
 
     async addExercise(exerciseData) {
+      console.log(exerciseData);
       if (!exerciseData.name) {
         alert('Please fill in at least the name.')
         return
       }
       try {
-        const newExercise = {
-          ...exerciseData,
-          own: true,
-        }
-        const response = await apiClient.post('/api/exercises', newExercise);
+        const response = await apiClient.post('/api/exercises', exerciseData);
         this.exercises.push(response.data.exercise)
         console.log('Added new exercise:', response.data.exercise)
       } catch (error) {

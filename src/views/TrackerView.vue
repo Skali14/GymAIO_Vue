@@ -2,6 +2,10 @@
   <main class="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 text-gray-800 font-sans p-4 md:p-6 lg:p-8">
     <div class="max-w-7xl mx-auto">
       <!-- Workout Selection View -->
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">Training Tracker</h1>
+        <p class="text-gray-600">Easily track and record your trainings</p>
+      </div>
       <div v-if="!isWorkoutActive" class="space-y-8">
         <section class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
           <h2 class="text-xl font-bold mb-6 text-gray-800 flex items-center">
