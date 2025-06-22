@@ -20,6 +20,8 @@ export const useExerciseStore = defineStore('exercise', {
   name: 'ExercisePage',
   state: () => ({
     exercises: [],
+    websocket: null,
+    interests: ['exercises:create', 'exercises:update', 'exercises:delete'], // Interests for this view
   }),
   getters: {
     myExercises: (state) => {
@@ -157,5 +159,86 @@ export const useExerciseStore = defineStore('exercise', {
         this.latestErrorMessage = error.message || 'Error setting up the request.';
       }
     },
+
+  setupWebSocket() {
+  // Connect to our standalone WebSocket server on port 3002
+  const interestsString = this.interests.join(',');
+  const wsUrl = `ws://localhost:3002?interests=${encodeURIComponent(interestsString)}`;
+  this.websocket = new WebSocket(wsUrl);
+
+  this.websocket.onopen = () => {
+    console.log('WebSocket connection established.');
+  };
+  this.websocket.onmessage = (event) => {
+    console.log('Message from server: ', event.data);
+  };
+  this.websocket.onerror = (error) => {
+    console.error('WebSocket error:', error);
+  };
+  this.websocket.onclose = () => {
+    console.log('WebSocket connection closed.');
+  };
   },
+
+  handleWebSocketMessage(event) {
+    const data = JSON.parse(event.data);
+    console.log('Received real-time event:', data);
+    switch (data.operation) {
+    case 'create':
+    this.handleExerciseCreated(data.payload);
+    break;
+    case 'update':
+    this.handleExerciseUpdated(data.payload);
+    break;
+    case 'delete':
+    this.handleExerciseDeleted(data.payload);
+    break;
+    default:
+    console.warn('Received unknown WebSocket operation:', data.operation);
+    }
+},
+// ADD THESE NEW HANDLER METHODS
+handleExerciseCreated(newExercise) {
+    this.exercises.push(newExercise)
+    console.log('Added new exercise:', newExercise)
+},
+
+handleExerciseUpdated(updatedExercise) {
+    const index = this.exercises.findIndex((exercise) => exercise._id === updatedExercise._id)
+    this.exercises.splice(index, 1, { ...updatedExercise })
+    console.log('Updated exercise:', updatedExercise.name)
+},
+
+async handleExerciseDeleted(exerciseId) {
+  this.exercises = this.exercises.filter((exercise) => exercise._id !== exerciseId)
+
+  // Get the plan store instance
+  const planStore = usePlanStore()
+
+  // Update all plans to remove the deleted exercise
+  for (const plan of planStore.plans) {
+    const updatedExercises = plan.exercises.filter(ex => ex._id !== exerciseId)
+    if (updatedExercises.length !== plan.exercises.length) {
+      // Only update if the exercise was actually in the plan
+      if(updatedExercises.length === 0) {
+        // If the exercise is not in any plan, delete the plan
+        await planStore.deletePlan(plan._id)
+      } else {
+      const updatedPlan = {
+        ...plan,
+        exercises: updatedExercises
+      }
+
+      await planStore.updatePlan(updatedPlan)
+      }
+    }
+  }
+
+  if (this.exercises.length < initialLength) {
+    console.log('ExerciseStore: Deleted exercise - Name:', exerciseName)
+  } else {
+    console.warn('ExerciseStore: Exercise not found for deletion - ID:', exerciseId)
+  }
+},
+},
 })

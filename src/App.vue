@@ -2,9 +2,11 @@
 import { RouterLink, RouterView, useRoute, useRouter  } from 'vue-router'
 import { computed, ref, onMounted, onUnmounted, watch } from 'vue'
 import { useAuthStore } from '@/stores/authStore' // Import the auth store
+import { useExerciseStore } from '@/stores/exerciseStore' // Import the auth store
 
 const route = useRoute()
 const authStore = useAuthStore() // Initialize auth store
+const exerciseStore = useExerciseStore()
 const mobileMenuOpen = ref(false)
 const isScrolled = ref(false)
 const router = useRouter()
@@ -44,6 +46,7 @@ watch(() => route.path, () => {
 onMounted(() => {
   window.addEventListener('scroll', checkScroll)
   checkScroll()
+  exerciseStore.setupWebSocket()
 })
 
 onUnmounted(() => {
