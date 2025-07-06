@@ -58,8 +58,6 @@ export const useMealStore = defineStore('meal', {
     allMeals: (state) => state.meals,
     },
 
-
-    // Actions: Methods to modify the state
   actions: {
     async getAllMeals() {
       try {
@@ -71,11 +69,11 @@ export const useMealStore = defineStore('meal', {
       }
     },
 
-    // Action to add a new dish
+    // Action to add a new meal
     async addMeal(mealData) {
       try {
         const response = await apiClient.post('/api/meals', mealData);
-      // Add the newly created dish (with ID from server) to the local array
+      // Add the newly created meal (with ID from server) to the local array
         this.meals.push(response.data);
       console.log('Added new meal:', response.data.name);
       } catch (error) {
@@ -83,7 +81,7 @@ export const useMealStore = defineStore('meal', {
       }
     },
 
-    // Action to update an existing dish
+    // Action to update an existing meal
     async updateMeal(updatedMealData) {
       try {
         // Update existing meal
@@ -103,11 +101,10 @@ export const useMealStore = defineStore('meal', {
       }
     },
 
-    // Action to delete a dish by its ID
+    // Action to delete a meal by its ID
     async deleteMeal(mealId) {
       try {
         await apiClient.delete(`/api/meals/${mealId}`);
-        // Filter the array, keeping only dishes that DON'T match the ID
         this.meals = this.meals.filter((meal) => meal._id !== mealId)
         console.log('Deleted meal ID:', mealId);
       } catch (error) {

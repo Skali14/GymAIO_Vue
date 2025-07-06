@@ -219,7 +219,6 @@
             await this.goalStore.deleteGoal(type);
           } catch (error) {
             console.error("Failed to delete goal:", error);
-            // You might want to show a user-friendly error message here
           }
         }
       },

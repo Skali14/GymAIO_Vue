@@ -131,7 +131,6 @@
 </template>
 
 <script>
-import apiClient from '@/api/apiClient';  // import the configured axios instance
 import { mapStores } from 'pinia'
 import router from '@/router/index';
 import { useAuthStore } from '@/stores/authStore';
@@ -166,7 +165,7 @@ export default {
 
         await this.authStore.login(this.loginForm.email, this.loginForm.password)
         
-        // Handle successful login - redirect to dashboard/main app
+        // Handle successful login
         router.push({ name: 'UserDashboard' });
         
       } catch (error) {

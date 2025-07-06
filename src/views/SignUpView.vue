@@ -237,11 +237,7 @@ export default {
         if (!this.formIsValid) {
           throw new Error('Please fill in all required fields correctly')
         }
-
-        // Call your API
         await this.createAccount()
-
-        // Success - redirect to login or dashboard
         this.$router.push('/login?message=Account created successfully')
 
       } catch (error) {

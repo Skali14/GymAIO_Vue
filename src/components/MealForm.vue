@@ -139,7 +139,7 @@ export default {
     handleSubmit() {
       // Basic validation check (could be more extensive)
       if (!this.modelValue.name || this.modelValue.calories <= 0) {
-        alert('Form validation failed within MealForm (Name and Calories required).') // Or handle more gracefully
+        alert('Form validation failed within MealForm (Name and Calories required).')
         return
       }
       // Signal to the parent that the form is submitted

@@ -64,7 +64,6 @@
 </template>
 
 <script>
-// Import mapStores
 import { mapStores } from 'pinia'
 import { useMealStore } from '@/stores/mealStore.js'
 
@@ -83,8 +82,6 @@ export default {
     ...mapStores(useMealStore),
   },
   methods: {
-    // No need for mapActions mapping anymore
-
     requestEdit(meal) {
       this.$emit('edit-meal', meal)
     },
