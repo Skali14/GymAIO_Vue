@@ -7,7 +7,7 @@ import PlannerView from '@/views/PlannerView.vue'
 import { useAuthStore } from '@/stores/authStore';
 import TrackerView from '@/views/TrackerView.vue'
 import UserDashboardView from '@/views/UserDashboardView.vue'
-import AdminDashboard from '@/views/AdminDashboard.vue'
+import AdminDashboardView from '@/views/AdminDashboardView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -59,8 +59,8 @@ const router = createRouter({
     },
     {
       path: '/admin',
-      name: 'AdminDashboard',
-      component: AdminDashboard,
+      name: 'AdminDashboardView',
+      component: AdminDashboardView,
       meta: { requiresAuth: true }
     },
 

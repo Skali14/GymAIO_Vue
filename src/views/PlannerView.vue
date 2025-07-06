@@ -550,14 +550,14 @@ export default {
     editPlan(plan) {
       this.currentPlan = { ...plan }
       this.isEditing = true
-      console.log('PlannerPage: Editing plan -', plan.name)
+      console.log('PlannerView: Editing plan -', plan.name)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     },
 
     cancelEdit() {
       this.resetForm()
       this.isEditing = false
-      console.log('Cancelled edit.')
+      console.log('PlannerView: Cancelled edit.')
     },
 
     async deletePlan(planId) {
@@ -566,7 +566,7 @@ export default {
           await this.planStore.deletePlan(planId)
 
           if (this.isEditing && this.currentPlan._id === planId) {
-            console.log('PlannerPage: The currently edited plan was deleted. Resetting form.')
+            console.log('PlannerView: The currently edited plan was deleted. Resetting form.')
             this.resetForm()
           }
         } catch (error) {

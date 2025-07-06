@@ -185,12 +185,12 @@ export default {
     startEdit(exerciseToEdit) {
       this.currentExercise = { ...exerciseToEdit }
       this.isEditing = true
-      console.log('AdminDashboard: Editing shared exercise -', exerciseToEdit.name)
+      console.log('AdminDashboardView: Editing shared exercise -', exerciseToEdit.name)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     },
     cancelEdit() {
       this.resetForm()
-      console.log('Cancelled edit.')
+      console.log('AdminDashboardView: Cancelled edit.')
     },
     formatEntry(str) {
       return str
@@ -201,7 +201,7 @@ export default {
     },
   },
   mounted() {
-    console.log('AdminDashboard mounted!')
+    console.log('AdminDashboardView mounted!')
     this.exerciseStore.callGetAllExercises()
   },
 }

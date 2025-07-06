@@ -80,10 +80,10 @@ export default {
       this.resetForm()
     },
     handleExerciseDeleted(deletedExerciseId) {
-      console.log('ExercisePage: Received exercise-deleted event for ID', deletedExerciseId)
+      console.log('ExerciseView: Received exercise-deleted event for ID', deletedExerciseId)
 
       if (this.isEditing && this.currentExercise._id === deletedExerciseId) {
-        console.log('ExercisePage: The currently edited exercise was deleted. Resetting form.')
+        console.log('ExerciseView: The currently edited exercise was deleted. Resetting form.')
         this.resetForm()
       }
     },
@@ -95,16 +95,16 @@ export default {
     startEdit(exerciseToEdit) {
       this.currentExercise = { ...exerciseToEdit }
       this.isEditing = true
-      console.log('ExercisePage: Editing exercise -', exerciseToEdit.name)
+      console.log('ExerciseView: Editing exercise -', exerciseToEdit.name)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     },
     cancelEdit() {
       this.resetForm()
-      console.log('Cancelled edit.')
+      console.log('ExerciseView: Cancelled edit.')
     },
   },
   mounted() {
-    console.log('ExercisePage mounted!')
+    console.log('ExerciseView mounted!')
     this.exerciseStore.callGetAllExercises()
   },
 }

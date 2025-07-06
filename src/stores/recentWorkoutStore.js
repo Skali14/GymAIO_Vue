@@ -29,7 +29,7 @@ export const useRecentWorkoutStore = defineStore('recentWorkout', {
         /*if (this.recentWorkouts.length > 10) {
           this.recentWorkouts.pop() // Keep only last 10 workouts
         }*/
-        console.log('Added new workout:', response.data.workout)
+        console.log('RecentWorkoutStore: Added new workout:', response.data.workout)
       } catch (error) {
         this.handleApiError(error, 'Failed to add workout');
       }

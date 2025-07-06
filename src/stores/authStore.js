@@ -16,7 +16,7 @@ export const useAuthStore = defineStore('auth', {
 
     actions: {
         async login(email, password) {
-            console.log("Loggin in, in authStore")
+            console.log("Logging in, in authStore")
             const response = await apiClient.post('/api/login', { email: email, password: password });
             this.token = response.data.token;
             localStorage.setItem('token', this.token); // store token after login

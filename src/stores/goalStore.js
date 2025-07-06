@@ -18,10 +18,10 @@ export const useGoalStore = defineStore('goal', {
     proteinGoal: (state) => state.goals.proteins || 0,
     carbsGoal: (state) => state.goals.carbohydrates || 0,
     fatsGoal: (state) => state.goals.fats || 0,
-    
+
     // Get all goals as an object
     allGoals: (state) => state.goals,
-    
+
     // Check if goals are set (any goal > 0)
     hasGoalsSet: (state) => {
       return Object.values(state.goals).some(value => value > 0)
@@ -34,7 +34,6 @@ export const useGoalStore = defineStore('goal', {
       try {
         const response = await apiClient.get('/api/goals/')
         this.goals = response.data.goals
-        console.log('GoalStore: Fetched all goals:', this.goals)
       } catch (error) {
         this.handleApiError(error, 'Failed to fetch goals')
       }
@@ -46,11 +45,11 @@ export const useGoalStore = defineStore('goal', {
           goalType: goalType,
           value: value
         })
-        
+
         // Update local state
         this.goals[goalType] = value
         console.log(`GoalStore: Updated ${goalType} goal to ${value}`)
-        
+
         return response.data
       } catch (error) {
         this.handleApiError(error, `Failed to update ${goalType} goal`)
@@ -64,11 +63,11 @@ export const useGoalStore = defineStore('goal', {
           goalType: goalType,
           value: 0
         })
-        
+
         // Update local state
         this.goals[goalType] = 0
         console.log(`GoalStore: Deleted ${goalType} goal`)
-        
+
         return response.data
       } catch (error) {
         this.handleApiError(error, `Failed to delete ${goalType} goal`)
@@ -79,10 +78,10 @@ export const useGoalStore = defineStore('goal', {
     // Set multiple goals at once
     async setGoals(goalsObject) {
       try {
-        const promises = Object.entries(goalsObject).map(([type, value]) => 
+        const promises = Object.entries(goalsObject).map(([type, value]) =>
           this.updateGoal(type, value)
         )
-        
+
         await Promise.all(promises)
         console.log('GoalStore: Set multiple goals:', goalsObject)
       } catch (error) {
@@ -100,7 +99,7 @@ export const useGoalStore = defineStore('goal', {
           carbohydrates: 0,
           fats: 0
         }
-        
+
         await this.setGoals(resetGoals)
         console.log('GoalStore: Reset all goals')
       } catch (error) {
@@ -111,7 +110,7 @@ export const useGoalStore = defineStore('goal', {
 
     handleApiError(error, contextMessage = 'An API error occurred') {
       console.error(contextMessage, error) // Log the full error for debugging
-      
+
       if (error.response) {
         // The request was made and the server responded with a status code
         // that falls out of the range of 2xx

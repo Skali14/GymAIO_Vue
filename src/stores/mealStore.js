@@ -1,5 +1,4 @@
 import { defineStore } from 'pinia'
-import { useAuthStore } from './authStore';
 import apiClient from '@/api/apiClient';  // import the configured axios instance
 
   // Initial meal data structure helper
@@ -63,7 +62,6 @@ export const useMealStore = defineStore('meal', {
       try {
         const response = await apiClient.get('/api/meals');
         this.meals = response.data.meals;
-        console.log(response.data.meals);
       } catch (error) {
         this.handleApiError(error, 'Failed to fetch meals');
       }
@@ -75,7 +73,7 @@ export const useMealStore = defineStore('meal', {
         const response = await apiClient.post('/api/meals', mealData);
       // Add the newly created meal (with ID from server) to the local array
         this.meals.push(response.data);
-      console.log('Added new meal:', response.data.name);
+      console.log('MealStore: Added new meal:', response.data.name);
       } catch (error) {
         this.handleApiError(error, `Failed to add meal`);
       }
@@ -85,7 +83,7 @@ export const useMealStore = defineStore('meal', {
     async updateMeal(updatedMealData) {
       try {
         // Update existing meal
-        const response = await apiClient.put(`/api/meals/${updatedMealData._id}`, updatedMealData);
+        await apiClient.put(`/api/meals/${updatedMealData._id}`, updatedMealData);
         // Update the local array with the response from the server
 
         const index = this.meals.findIndex((meals) => meals._id === updatedMealData._id)
@@ -106,7 +104,7 @@ export const useMealStore = defineStore('meal', {
       try {
         await apiClient.delete(`/api/meals/${mealId}`);
         this.meals = this.meals.filter((meal) => meal._id !== mealId)
-        console.log('Deleted meal ID:', mealId);
+        console.log('MealStore: Deleted meal ID:', mealId);
       } catch (error) {
         this.handleApiError(error, "Failed to delete meal")
       }

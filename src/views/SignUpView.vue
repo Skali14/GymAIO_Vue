@@ -265,6 +265,9 @@ export default {
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword
     }
+  },
+  mounted() {
+    console.log('SignUpView mounted!')
   }
 }
 </script>

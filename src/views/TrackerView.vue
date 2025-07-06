@@ -574,6 +574,7 @@ export default {
     }
   },
   mounted() {
+    console.log("TrackerView mounted!")
     this.planStore.callGetAllPlans()
     this.recentWorkoutStore.callGetAllRecentWorkouts()
   },

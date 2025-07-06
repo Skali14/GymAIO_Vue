@@ -42,14 +42,12 @@ export const useExerciseStore = defineStore('exercise', {
       try {
         const response = await apiClient.get('/api/exercises');
         this.exercises = response.data.exercises;
-        console.log(response.data.exercises);
       } catch (error) {
         this.handleApiError(error, 'Failed to fetch exercises');
       }
     },
 
     async addExercise(exerciseData) {
-      console.log(exerciseData);
       if (!exerciseData.name) {
         alert('Please fill in at least the name.')
         return
@@ -57,7 +55,7 @@ export const useExerciseStore = defineStore('exercise', {
       try {
         const response = await apiClient.post('/api/exercises', exerciseData);
         this.exercises.push(response.data.exercise)
-        console.log('Added new exercise:', response.data.exercise)
+        console.log('ExerciseStore: Added new exercise:', response.data.exercise)
       } catch (error) {
         this.handleApiError(error, 'Failed to add exercise');
       }
@@ -70,7 +68,7 @@ export const useExerciseStore = defineStore('exercise', {
         try {
           const response = await apiClient.put(`/api/exercises/${updatedExerciseData._id}`, updatedExerciseData);
           this.exercises.splice(index, 1, { ...response.data.updatedExercise })
-          console.log('Updated exercise:', response.data.updatedExercise.name)
+          console.log('ExerciseStore: Updated exercise:', response.data.updatedExercise.name)
         } catch (error) {
           this.handleApiError(error, 'Failed to update exercise');
         }
@@ -165,7 +163,6 @@ export const useExerciseStore = defineStore('exercise', {
   // Connect to our standalone WebSocket server on port 3002
   const interestsString = this.interests.join(',');
   const authStore = useAuthStore();
-  console.log('Auth Store : ', authStore.currentUser);
   const wsUrl = `ws://localhost:3002?id=${authStore.currentUser.id}&interests=${encodeURIComponent(interestsString)}`;
   this.websocket = new WebSocket(wsUrl);
 
@@ -204,13 +201,13 @@ export const useExerciseStore = defineStore('exercise', {
 // ADD THESE NEW HANDLER METHODS
 handleExerciseCreated(newExercise) {
     this.exercises.push(newExercise)
-    console.log('Added new exercise:', newExercise)
+    console.log('Live-Added new exercise:', newExercise.name)
 },
 
 handleExerciseUpdated(updatedExercise) {
     const index = this.exercises.findIndex((exercise) => exercise._id === updatedExercise._id)
     this.exercises.splice(index, 1, { ...updatedExercise })
-    console.log('Updated exercise:', updatedExercise.name)
+    console.log('Live-Updated exercise:', updatedExercise.name)
 },
 
 async handleExerciseDeleted(exerciseId) {
@@ -237,6 +234,7 @@ async handleExerciseDeleted(exerciseId) {
       }
     }
   }
+  console.log('Live-Deleted exercise:', exerciseId)
 },
 },
 })

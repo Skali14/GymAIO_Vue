@@ -164,10 +164,10 @@ export default {
         }
 
         await this.authStore.login(this.loginForm.email, this.loginForm.password)
-        
+
         // Handle successful login
         router.push({ name: 'UserDashboard' });
-        
+
       } catch (error) {
         this.errorMessage = error.message || 'Login failed. Please try again.'
       } finally {
@@ -179,7 +179,10 @@ export default {
     togglePasswordVisibility() {
       this.showPassword = !this.showPassword
     }
-  }
+  },
+  mounted() {
+    console.log('LoginView mounted!')
+  },
 }
 </script>
 

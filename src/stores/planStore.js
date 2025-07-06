@@ -38,7 +38,7 @@ export const usePlanStore = defineStore('plan', {
         }
         const response = await apiClient.post('/api/plans', newPlan);
         this.plans.push(response.data.plan)
-        console.log('Added new plan:', response.data.plan)
+        console.log('PlanStore: Added new plan:', response.data.plan)
       } catch (error) {
         this.handleApiError(error, 'Failed to add plan');
       }
@@ -51,7 +51,7 @@ export const usePlanStore = defineStore('plan', {
         try {
           const response = await apiClient.put(`/api/plans/${updatedPlanData._id}`, updatedPlanData);
           this.plans.splice(index, 1, { ...response.data.updatedPlan })
-          console.log('Updated plan:', response.data.updatedPlan.name)
+          console.log('PlanStore: Updated plan:', response.data.updatedPlan.name)
         } catch (error) {
           this.handleApiError(error, 'Failed to update plan');
         }

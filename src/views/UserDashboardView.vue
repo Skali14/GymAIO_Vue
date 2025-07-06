@@ -33,7 +33,7 @@
           </div>
           <div class="mt-4">
             <div class="w-full bg-gray-200 rounded-full h-2">
-              <div 
+              <div
                 class="bg-blue-500 h-2 rounded-full transition-all duration-300"
                 :style="{ width: `${getProgressPercentage(todayCalories, goalStore.calorieGoal)}%` }"
               ></div>
@@ -190,7 +190,7 @@
                 <span class="text-sm text-gray-600">{{ todayCalories }}/{{ goalStore.calorieGoal }}</span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   class="bg-blue-500 h-2 rounded-full transition-all duration-300"
                   :style="{ width: `${getProgressPercentage(todayCalories, goalStore.calorieGoal)}%` }"
                 ></div>
@@ -204,7 +204,7 @@
                 <span class="text-sm text-gray-600">{{ todayProtein }}g/{{ goalStore.proteinGoal }}g</span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   class="bg-green-500 h-2 rounded-full transition-all duration-300"
                   :style="{ width: `${getProgressPercentage(todayProtein, goalStore.proteinGoal)}%` }"
                 ></div>
@@ -218,7 +218,7 @@
                 <span class="text-sm text-gray-600">{{ todayCarbs }}g/{{ goalStore.carbsGoal }}g</span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   class="bg-yellow-500 h-2 rounded-full transition-all duration-300"
                   :style="{ width: `${getProgressPercentage(todayCarbs, goalStore.carbsGoal)}%` }"
                 ></div>
@@ -232,7 +232,7 @@
                 <span class="text-sm text-gray-600">{{ todayFats }}g/{{ goalStore.fatsGoal }}g</span>
               </div>
               <div class="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   class="bg-purple-500 h-2 rounded-full transition-all duration-300"
                   :style="{ width: `${getProgressPercentage(todayFats, goalStore.fatsGoal)}%` }"
                 ></div>
@@ -255,7 +255,8 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 } from 'chart.js'
 import { usePlanStore } from '@/stores/planStore'
 import { useRecentWorkoutStore } from '@/stores/recentWorkoutStore'
@@ -271,7 +272,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 )
 
 export default {
@@ -284,7 +286,7 @@ export default {
       // Chart controls
       calorieChartPeriod: 7,
       selectedExercise: '',
-      
+
       // Computed stats
       weeklyWorkouts: 0,
       lastWeekWorkouts: 0
@@ -311,47 +313,46 @@ export default {
     currentUser() {
       return this.authStore.currentUser
     },
-    
+
     todayCalories() {
       return this.mealStore.currentCalories
     },
-    
+
     todayProtein() {
       return this.mealStore.currentProteins
     },
-    
+
     todayCarbs() {
       return this.mealStore.currentCarbohydrates
     },
-    
+
     todayFats() {
       return this.mealStore.currentFats
     },
-    
+
     totalExercises() {
       return this.planStore.plans.reduce((total, plan) => {
         return total + (plan.exercises ? plan.exercises.length : 0)
       }, 0)
     },
-    
+
     calorieChartData() {
       const days = parseInt(this.calorieChartPeriod)
       const labels = []
       const data = []
       const goalLine = []
-      
+
       for (let i = days - 1; i >= 0; i--) {
         const date = new Date()
         date.setDate(date.getDate() - i)
         labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
-        
+
         // Get actual calorie data for this date
         const dayCalories = this.getCaloriesForDate(date)
-        console.log(dayCalories, date)
         data.push(dayCalories)
         goalLine.push(this.goalStore.calorieGoal || 0)
       }
-      
+
       return {
         labels,
         datasets: [
@@ -374,7 +375,7 @@ export default {
         ]
       }
     },
-    
+
     calorieChartOptions() {
       return {
         responsive: true,
@@ -392,42 +393,42 @@ export default {
         }
       }
     },
-    
+
     weightProgressData() {
       if (!this.selectedExercise) return { labels: [], datasets: [] }
-      
+
       // Get all workouts that contain the selected exercise
       const relevantWorkouts = this.recentWorkoutStore.recentWorkouts.filter(workout => {
-        return workout.exercises && workout.exercises.some(exercise => 
-          exercise._id === this.selectedExercise && 
-          exercise.setData && 
+        return workout.exercises && workout.exercises.some(exercise =>
+          exercise._id === this.selectedExercise &&
+          exercise.setData &&
           exercise.setData.length > 0 &&
           !exercise.skipped
         )
       }).sort((a, b) => new Date(a.date) - new Date(b.date)) // Sort by date ascending
-      
+
       if (relevantWorkouts.length === 0) {
         return { labels: [], datasets: [] }
       }
-      
+
       const labels = []
       const maxWeights = []
       const avgWeights = []
-      
+
       relevantWorkouts.forEach(workout => {
         const exercise = workout.exercises.find(ex => ex._id === this.selectedExercise)
         if (exercise && exercise.setData && exercise.setData.length > 0) {
           // Add workout date as label
-          labels.push(new Date(workout.date).toLocaleDateString('en-US', { 
-            month: 'short', 
-            day: 'numeric' 
+          labels.push(new Date(workout.date).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric'
           }))
-          
+
           // Calculate max weight for this workout
           const weights = exercise.setData
             .filter(set => set.weight && set.weight > 0)
             .map(set => Number(set.weight))
-          
+
           if (weights.length > 0) {
             maxWeights.push(Math.max(...weights))
             avgWeights.push(Math.round(weights.reduce((sum, w) => sum + w, 0) / weights.length))
@@ -437,7 +438,7 @@ export default {
           }
         }
       })
-      
+
       const datasets = [
         {
           label: 'Max Weight (kg)',
@@ -448,7 +449,7 @@ export default {
           fill: false
         }
       ]
-      
+
       // Add average weight line if there's enough data variation
       if (avgWeights.length > 1 && Math.max(...avgWeights) - Math.min(...avgWeights) > 0) {
         datasets.push({
@@ -461,13 +462,13 @@ export default {
           borderDash: [3, 3]
         })
       }
-      
+
       return {
         labels,
         datasets
       }
     },
-    
+
     weightProgressOptions() {
       return {
         responsive: true,
@@ -485,7 +486,7 @@ export default {
       }
     }
   },
-  
+
   methods: {
     getCurrentDate() {
       return new Date().toLocaleDateString('en-US', {
@@ -495,7 +496,7 @@ export default {
         day: 'numeric'
       })
     },
-    
+
     formatDate(date) {
       return new Date(date).toLocaleDateString('en-US', {
         month: 'short',
@@ -504,38 +505,38 @@ export default {
         minute: '2-digit'
       })
     },
-    
+
     formatDuration(seconds) {
       const minutes = Math.floor(seconds / 60)
       const remainingSeconds = seconds % 60
       return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
     },
-    
+
     getCaloriesForDate(date) {
       const dateString = date.toDateString()
       const dayMeals = this.mealStore.meals.filter(meal => {
         if (!meal.lastModified) return false
         return new Date(meal.lastModified).toDateString() === dateString
       })
-      
+
       return dayMeals.reduce((total, meal) => {
         return total + (Number(meal.calories) || 0)
       }, 0)
     },
-    
+
     getProgressPercentage(current, goal) {
       if (!goal || goal <= 0) return 0
       return Math.min((current / goal) * 100, 100)
     },
-    
+
     calculateWeeklyWorkouts() {
       const oneWeekAgo = new Date()
       oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
-      
+
       const twoWeeksAgo = new Date()
       twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14)
 
-      this.weeklyWorkouts = this.recentWorkoutStore.recentWorkouts.filter(workout => 
+      this.weeklyWorkouts = this.recentWorkoutStore.recentWorkouts.filter(workout =>
         new Date(workout.date) > oneWeekAgo
       ).length
 
@@ -544,7 +545,7 @@ export default {
         return workoutDate > twoWeeksAgo && workoutDate <= oneWeekAgo
       }).length
     },
-    
+
     async loadAllData() {
       try {
         // Load data from all stores
@@ -556,7 +557,7 @@ export default {
           this.authStore.fetchUser(),
           this.goalStore.getAllGoals()
         ])
-        
+
         // Calculate weekly workout stats after data is loaded
         this.calculateWeeklyWorkouts()
       } catch (error) {
@@ -564,11 +565,12 @@ export default {
       }
     }
   },
-  
+
   async mounted() {
+    console.log("UserDashboardView mounted!")
     await this.loadAllData()
   },
-  
+
   watch: {
     'recentWorkoutStore.recentWorkouts': {
       handler() {
@@ -576,7 +578,7 @@ export default {
       },
       deep: true
     }
-  }
+  },
 }
 </script>
 
