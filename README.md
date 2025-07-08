@@ -1,35 +1,29 @@
-# GymAIO_Vue
+# GymAIO - Frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+GymAIO is a fitness-tracking app enabling you to keep track of your workouts and your calories / macronutrients.
 
-## Recommended IDE Setup
+Backend: [GymAIO - Backend](https://github.com/Skali14/gymaio-backend)
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Setup
 
-## Customize configuration
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- Run `npm install`
 
-## Project Setup
-
-```sh
-npm install
-```
 
 ### Compile and Hot-Reload for Development
 
-```sh
-npm run dev
-```
+- Run `npm run dev`
 
 ### Compile and Minify for Production
 
-```sh
-npm run build
-```
+- Run `npm run build`
 
-### Lint with [ESLint](https://eslint.org/)
+## Contributors
 
-```sh
-npm run lint
-```
+1. Michael Pittlik - k12226442
+2. Simon Kadlec - k12222898
+
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
